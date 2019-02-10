@@ -1,7 +1,7 @@
 // ************************************************************************************
 // \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// 
 //
-//                 #TROLLBLOCKNET REPORTING SYSTEM BACKEND VERSION 1.5
+//                 #TROLLBLOCKNET REPORTING SYSTEM BACKEND VERSION 1.6
 //  
 //                           AUTHOR: @TROLLBLOCKNET (Twitter)
 //        
@@ -22,7 +22,7 @@
 
 // ************************************************************************************
 
-//                                       REQUIRES
+//                                       REQUIRES 
 
 // ************************************************************************************
 
@@ -75,7 +75,7 @@ dbApp.use(express.static('public'));
 // init sqlite db
 var fs = require('fs');
 //var dbFile = './.data/tbn_reports2.db';
-var dbFile = './.data/tbn_reports.db';
+var dbFile = './.data/tbn_reports10.db';
 var exists = fs.existsSync(dbFile); 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(dbFile);
@@ -114,9 +114,6 @@ dbApp.get('/', function(request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
-// endpoint to get all the dreams in the database
-// currently this is the only endpoint, ie. adding dreams won't update the database
-// read the sqlite3 module docs and try to add your own! https://www.npmjs.com/package/sqlite3
 dbApp.get('/getReports', function(request, response) {
   
       
@@ -136,8 +133,10 @@ dbApp.get('/getReports', function(request, response) {
       access_token_key: process.env.TROLLBLOCKCHAIN_TWITTER_ACCESS_TOKEN_KEY,
       access_token_secret: process.env.TROLLBLOCKCHAIN_TWITTER_ACCESS_TOKEN_SECRET
     });
-    var dbTable = "Trolls"
-    retrieveTwitterBlocksAndUpdateDB(client,dbTable); // --> ADAPT WITH PARAMETERS TO MAKE CALLS TO THE OTHER API'S
+    let dbTable1 = "Trolls"
+    retrieveTwitterBlocksAndUpdateDB(client,dbTable1); 
+  
+    //retrieveTwitterFollowers(client,"Xhggfigvkkcfjt") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
        
     
     //-------------- @XUSMABLOCKNET -----------------
@@ -149,8 +148,8 @@ dbApp.get('/getReports', function(request, response) {
       access_token_key: process.env.XUSMABLOCKNET_TWITTER_ACCESS_TOKEN_KEY,
       access_token_secret: process.env.XUSMABLOCKNET_TWITTER_ACCESS_TOKEN_SECRET
     });
-    dbTable = "Regim";
-    retrieveTwitterBlocksAndUpdateDB(client,dbTable); // --> ADAPT WITH PARAMETERS TO MAKE CALLS TO THE OTHER API'S
+    let dbTable2 = "Regim";
+    retrieveTwitterBlocksAndUpdateDB(client,dbTable2); 
   
   
     
@@ -163,8 +162,8 @@ dbApp.get('/getReports', function(request, response) {
       access_token_key: process.env.IBEXBLOCKNET_TWITTER_ACCESS_TOKEN_KEY,
       access_token_secret: process.env.IBEXBLOCKNET_TWITTER_ACCESS_TOKEN_SECRET
     });
-    dbTable = "IBEX";
-    retrieveTwitterBlocksAndUpdateDB(client,dbTable); // --> ADAPT WITH PARAMETERS TO MAKE CALLS TO THE OTHER API'S 
+    let dbTable3 = "IBEX";
+    retrieveTwitterBlocksAndUpdateDB(client,dbTable3); 
   
 
 // ---------------------------------------------------
@@ -325,7 +324,9 @@ function retrieveTwitterBlocksAndUpdateDB(client,table){
   
   client.get('/blocks/ids.json?stringify_ids=true&cursor=-1', function(error, profiles, response) {
   if(error) {
-    //throw error   
+    //throw error  
+    //let logEntry = "[tbc.twitter] : ERROR! : "+error.message;
+    //log(logEntry);
     return console.error(error);
      
   }else{
@@ -340,6 +341,7 @@ function retrieveTwitterBlocksAndUpdateDB(client,table){
   //console.log(response);  // Raw response object.
   
 });
+  
   
   
 // ---------------------------------------------------
@@ -393,6 +395,8 @@ function updateCSV(ids,fileName){
   {
     wstream.write(ids[i]+'\n');
   }
+  
+  //wstream.write(ids+'');
   wstream.end();
 }
 
@@ -450,3 +454,37 @@ function log(message){
   }
   return;
 } 
+
+  // ---------------------------------------------------
+// Function: getTwitterFollowers(client,tw_userID)
+// Description: downoad the followers lists of tw_userID into a CSV file
+// Input: client --> Twitter API connection object 
+//        tw_userID --> user to download its followers 
+// Output: N/A
+// ---------------------------------------------------
+
+
+function retrieveTwitterFollowers(client,screenName){
+  
+  // IMPORT TWITTER BLOCKED PROFILES INTO INTO DB 
+  
+  client.get('/followers/ids.json?cursor=-1&screen_name='+screenName+'&count=5000', function(error, profiles, response) {
+  if(error) {
+    //throw error  
+    //let logEntry = "[tbc.twitter] : ERROR! : "+error.message;
+    //log(logEntry);
+    return console.error(error);
+     
+  }else{
+    log('[tbc.twitter] : followers of '+screenName+' profiles list received' );  
+  };  
+  
+  let filename = "followers";
+  
+  updateCSV(profiles.ids,filename);
+   
+   return;
+  //console.log(response);  // Raw response object.
+  
+});
+}

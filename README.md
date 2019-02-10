@@ -1,4 +1,3 @@
-
 # TBC: Trollblock Network Core (Backend Engine)
 
 🗨️ TrollBlockChain DAAP - Trolls Distributed Ledger / DB (BlockChain Implementation) - @trollblocknet
