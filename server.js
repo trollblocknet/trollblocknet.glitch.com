@@ -28,7 +28,7 @@
 
 const amqp = require('amqplib');
 var Twitter = require('twitter'); 
-
+var functions = require('./functions');
 
 // ************************************************************************************
 
@@ -62,6 +62,7 @@ var currentItem = "NULL";
 
 // init project
 var express = require('express');
+var cors = require('cors');
 var bodyParser = require('body-parser');
 var dbApp = express();
 dbApp.use(bodyParser.urlencoded({ extended: true }));
@@ -84,20 +85,20 @@ var db = new sqlite3.Database(dbFile);
 db.serialize(function(){
   if (!exists) {
     db.run('CREATE TABLE Reports (tw_userID TEXT, tweetID TEXT, list TEXT, comments TEXT, PRIMARY KEY (tweetID))');
-    log('New table "Reports" created!');
+    functions.log('New table "Reports" created!');
     
     db.run('CREATE TABLE Trolls (tw_userID TEXT, PRIMARY KEY (tw_userID))');
-    log('New table "Trolls" created!');
+    functions.log('New table "Trolls" created!');
     
     db.run('CREATE TABLE Regim (tw_userID TEXT, PRIMARY KEY (tw_userID))');
-    log('New table "Regim" created!');
+    functions.log('New table "Regim" created!');
     
     db.run('CREATE TABLE IBEX (tw_userID TEXT, PRIMARY KEY (tw_userID))');
-    log('New table "IBEX" created!');
+    functions.log('New table "IBEX" created!');
     
   }
   else {
-    log('[tbc.sqlite] : Database "tbc-reports" ready to go!');
+    functions.log('[tbc.sqlite] : Database "tbc-reports" ready to go!');
   }
 });
 
@@ -114,7 +115,19 @@ dbApp.get('/', function(request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
-dbApp.get('/getReports', function(request, response) {
+const whitelist = ['http://trollblocknet.cat']
+const corsOptions = {
+  origin: function(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
+
+dbApp.get('/getReports', cors(corsOptions), function (request, response, next) {
   
       
 // ---------------------------------------------------
@@ -134,9 +147,9 @@ dbApp.get('/getReports', function(request, response) {
       access_token_secret: process.env.TROLLBLOCKCHAIN_TWITTER_ACCESS_TOKEN_SECRET
     });
     let dbTable1 = "Trolls"
-    retrieveTwitterBlocksAndUpdateDB(client,dbTable1); 
+    functions.retrieveTwitterBlocksAndUpdateDB2(db,dbTable1,client); 
   
-    //retrieveTwitterFollowers(client,"Xhggfigvkkcfjt") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
+    //retrieveTwitterFollowers(client,"PandoEulogio") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
        
     
     //-------------- @XUSMABLOCKNET -----------------
@@ -149,8 +162,7 @@ dbApp.get('/getReports', function(request, response) {
       access_token_secret: process.env.XUSMABLOCKNET_TWITTER_ACCESS_TOKEN_SECRET
     });
     let dbTable2 = "Regim";
-    retrieveTwitterBlocksAndUpdateDB(client,dbTable2); 
-  
+    functions.retrieveTwitterBlocksAndUpdateDB(db,dbTable2,client); 
   
     
     //-------------- @IBEXBLOCKNET -----------------
@@ -163,7 +175,7 @@ dbApp.get('/getReports', function(request, response) {
       access_token_secret: process.env.IBEXBLOCKNET_TWITTER_ACCESS_TOKEN_SECRET
     });
     let dbTable3 = "IBEX";
-    retrieveTwitterBlocksAndUpdateDB(client,dbTable3); 
+    functions.retrieveTwitterBlocksAndUpdateDB(db,dbTable3,client); 
   
 
 // ---------------------------------------------------
@@ -180,17 +192,18 @@ dbApp.get('/getReports', function(request, response) {
 				                 "UNION "+
 				                 "SELECT tw_userID FROM Ibex WHERE Reports.tw_userID = Ibex.tw_userID)";
   
-  //intersect 1 & 2
   
   db.all(dbQuery, function(err, rows) {
-    if (err) { log(console.error(err)) }
+    if (err) { functions.log(console.error(err)) }
     response.send(JSON.stringify(rows));
+    //response.json(rows);
   });
+  
 });
 
 // listen for requests :)
 var listener = dbApp.listen(process.env.PORT, function() {
-  log('[tbc.sqlite] : db app is listening on port ' + listener.address().port + '....');
+  functions.log('[tbc.sqlite] : db app is listening on port ' + listener.address().port + '....');
 });
 
 
@@ -218,7 +231,7 @@ const connect = async () => {
 
   channel.consume(rabbitQueue, msg => {
     const message = msg.content.toString();
-    log("[tbc.amqplib] : Message Received --> "+message);    
+    functions.log("[tbc.amqplib] : Message Received --> "+message);    
     
 // ************************************************************************************
 
@@ -241,8 +254,8 @@ const connect = async () => {
         if(err){  
           let logEntry ='[tbc.sqlite] : ERROR! : '+ err.message+' --> '+tweetID;
           
-          return log(logEntry); }
-        log(`[tbc.sqlite] : Rows inserted in Reports Table -> ${this.changes}`);
+          return functions.log(logEntry); }
+        functions.log(`[tbc.sqlite] : Rows inserted in Reports Table -> ${this.changes}`);
       });
     });
     
@@ -257,20 +270,20 @@ const connect = async () => {
     fakeApi(message)
       .then(response => {
         channel.ack(msg);
-        log("[tbc.amqplib] : Ack is done "+message);
+        functions.log("[tbc.amqplib] : Ack is done "+message);
       })
       .catch(error => {
-        log(console.error("[tbc.amqplib] : fakeApi", { error, message }));
+        functions.log(console.error("[tbc.amqplib] : fakeApi", { error, message }));
       });
   });
 
   channel.on("error", error => {
-    log(console.error("[tbc.amqplib] : connection error", error));
+    functions.log(console.error("[tbc.amqplib] : connection error", error));
   });
 
   channel.on("close", () => {
     const retryTimeoutMs = 30000;
-    log(console.info(`[tbc.amqplib] : connection closed, retrying in ${retryTimeoutMs / 1000}s...`));
+    functions.log(console.info(`[tbc.amqplib] : connection closed, retrying in ${retryTimeoutMs / 1000}s...`));
     setTimeout(connect, retryTimeoutMs);
   });
 };
@@ -304,187 +317,3 @@ module.exports = {
 
   
   
-// ************************************************************************************
-
-//                                    FUNCTIONS
-
-// ************************************************************************************
-
-
-// ---------------------------------------------------
-// Function: 
-// Description:
-// Input:
-// Output: N/A
-// ---------------------------------------------------
-
-function retrieveTwitterBlocksAndUpdateDB(client,table){
-  
-  // IMPORT TWITTER BLOCKED PROFILES INTO INTO DB 
-  
-  client.get('/blocks/ids.json?stringify_ids=true&cursor=-1', function(error, profiles, response) {
-  if(error) {
-    //throw error  
-    //let logEntry = "[tbc.twitter] : ERROR! : "+error.message;
-    //log(logEntry);
-    return console.error(error);
-     
-  }else{
-    log('[tbc.twitter] : '+table+' blocked profiles list received' );
-  };
-  
-  updateBlockedTable(profiles.ids,table); 
-    
-  updateCSV(profiles.ids,table);
-   
-   return;
-  //console.log(response);  // Raw response object.
-  
-});
-  
-  
-  
-// ---------------------------------------------------
-// Function:
-// Description:
-// Input:
-// Output:
-// ---------------------------------------------------
-  
-function updateBlockedTable(ids,table) { 
-    
-    let i;
-    var n = 0;
-    let sql = 'INSERT INTO '+table+' (tw_userID) VALUES (?)';
-    for (i=0;i<=ids.length;i++)
-    {   
-      //INSERT ROW 
-      db.serialize(function() {
-        db.run(sql,ids[i], function(err) {
-          if (err) {
-            //return console.error(err.message);
-            //return; 
-          } else {
-          n++;
-          
-          }  
-        }          
-        );       
-      });         
-    }
-    log('[tbc.sqlite] : New ' +table+ ' rows inserted -> ' + n); 
-    log('[tbc.sqlite] : Total ' +table+ ' (profiles) blocked -> ' + ids.length); 
-  return;
-  }  
-}
-
-
-// ---------------------------------------------------
-// Function:
-// Description:
-// Input:
-// Output:
-// ---------------------------------------------------
-
-function updateCSV(ids,fileName){
-  
-  var fs = require('fs');
-  var wstream = fs.createWriteStream('./public/'+fileName+'.csv');
-  let i;
-  for (i=0;i<ids.length;i++)
-  {
-    wstream.write(ids[i]+'\n');
-  }
-  
-  //wstream.write(ids+'');
-  wstream.end();
-}
-
-
-// ---------------------------------------------------
-// Function: timestamp()
-// Description: gets the system's current date and returns a formatted timestamp string --> [HH:MM:SS dd:mm:yy]
-// Input: N/A
-// Output: String --> formatted 
-// ---------------------------------------------------
-
-function timestamp(){
-  //return "dd/mm/yy-hh:MM"; 
-  
-process.env.TZ = 'Europe/Madrid';   
-var date = new Date();
-var d = date.getDate();
-var m = date.getMonth();
-var y = date.getFullYear();
-var H = date.getHours();
-var M = date.getMinutes();
-
-var timestamp = new String();
-      
-timestamp = H+':'+M+' '+d+'/'+m+'/'+y;
-  
-  return timestamp;
-}
-
-// ---------------------------------------------------
-// Function: log(String)
-// Description: Shows a log event in the server log console and saves it in /app/.data/console.log with current timestamp
-// Input: String --> Console message
-// Output: N/A
-// ---------------------------------------------------
-
-function log(message){
-  
-  var fs = require('fs');
-  const path = './.data/console.log';
-  let exists = fs.existsSync(path);
-  var output;
-  //if file ./data/console.log does not exist
-  if (fs.existsSync(path) == false){
-    fs.writeFile(path, timestamp()+' : '+message+'\n', (err) => {
-    if (err) throw err;
-    console.log(message);
-    });
-  } else { 
-  //if it does   
-    fs.appendFile(path, timestamp()+' : '+message+'\n', (err) => {
-    if (err) throw err;
-    console.log(message); 
-    });
-  }
-  return;
-} 
-
-  // ---------------------------------------------------
-// Function: getTwitterFollowers(client,tw_userID)
-// Description: downoad the followers lists of tw_userID into a CSV file
-// Input: client --> Twitter API connection object 
-//        tw_userID --> user to download its followers 
-// Output: N/A
-// ---------------------------------------------------
-
-
-function retrieveTwitterFollowers(client,screenName){
-  
-  // IMPORT TWITTER BLOCKED PROFILES INTO INTO DB 
-  
-  client.get('/followers/ids.json?cursor=-1&screen_name='+screenName+'&count=5000', function(error, profiles, response) {
-  if(error) {
-    //throw error  
-    //let logEntry = "[tbc.twitter] : ERROR! : "+error.message;
-    //log(logEntry);
-    return console.error(error);
-     
-  }else{
-    log('[tbc.twitter] : followers of '+screenName+' profiles list received' );  
-  };  
-  
-  let filename = "followers";
-  
-  updateCSV(profiles.ids,filename);
-   
-   return;
-  //console.log(response);  // Raw response object.
-  
-});
-}
