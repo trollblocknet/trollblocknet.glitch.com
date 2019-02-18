@@ -2,9 +2,9 @@
 
 🗨️ TrollBlockChain DAAP - Trolls Distributed Ledger / DB (BlockChain Implementation) - @trollblocknet
 
-🗨️ Current Production Version: tbc-beta_1.6
+🗨️ Current Production Version: tbc-beta_1.7
 
-🗨️ Current Developer Version: tbc-beta_1.7
+🗨️ Current Developer Version: tbc-beta_1.8
 
 🔫 App triggered by: cron-job.org --> "TrollBlockNet Core Backend - empty rabbitmq queue every 15 mins"
 
@@ -173,7 +173,7 @@ client.js -> html reports dynamic table erratic behaviour (does not always rende
 
 #### 🔴 TO-DO List for beta_1.7: ####
 
-##### ✅ 1.7_1: migrate client.js to trollblocknet.cat and render table there with proper css styles
+##### ✅ 1.7_1: migrate client.js to trollblocknet.cat and render table there 
 ##### 🕝 1.7_2: Fix Issue 1
 ##### ✅ 1.7_3: Fix Issue 2
 
@@ -197,7 +197,8 @@ server.js --> CSV files are only storing up to 5000 accounts
 ##### 🕝 1.8_6: migrate client.js to trollblocknet.cat and render table there with proper css styles
 ##### 🕝 1.8_7: Show amount of blocked accounts and timestamp of last update in lists table (both subsc. & csv)
 ##### 🕝 1.8_8: Show console log in client html (expandable in footer)
-##### 🕝 1.8_9: Make the table's first column sticky and the rest horizontally scrollable
+##### 🕝 1.8_9: Add proper css styles to table in trollblocknet.cat/notifications.html 
+##### 🕝 1.8_10: Make the same table's first column sticky and the rest horizontally scrollable (recycle from tbc-beta-16)
 
 -----------------------------------------------------------
 

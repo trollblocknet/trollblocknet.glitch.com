@@ -58,7 +58,7 @@ retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
   });
   }
   
-  var params = {count: '5000', cursor:  -1};
+  var params = {count: '5000', cursor:  -1, stringify_ids: true};
   client.get('blocks/ids', params, function getlist(error, list, response) 	
   {
      if (error) {
