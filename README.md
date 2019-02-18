@@ -1,9 +1,10 @@
-
 # TBC: Trollblock Network Core (Backend Engine)
 
 🗨️ TrollBlockChain DAAP - Trolls Distributed Ledger / DB (BlockChain Implementation) - @trollblocknet
 
-🗨️ Current version: tbc-beta_1.5
+🗨️ Current Production Version: tbc-beta_1.6
+
+🗨️ Current Developer Version: tbc-beta_1.7
 
 🔫 App triggered by: cron-job.org --> "TrollBlockNet Core Backend - empty rabbitmq queue every 15 mins"
 
@@ -150,18 +151,53 @@ Done, but the "monthly new logs" feature is still not implemented.
 
 ### tbc-beta_1.6 (node.js server based, not-distributed app)
 
-🕝 Improve current reporting management (more data and styles) and list table
+✅ Clean index.html and improve css (implement mobile UX for tables)
 
 #### 🔴 TO-DO List for beta_1.6: ####
 
-##### 🕝 1.6_1: Parse the tw-handler from App in the amqp message and include it in the reports table (create column)
-##### 🕝 1.6_2: Add timestamp to reports table and insert it from current time (javascript like it in the trollblockbot glitch project)
-##### 🕝 1.6_3: Add totals to reports lists and show message when there are no rows to display
-##### 🕝 1.6_4: Make reports list rows to render in different colors depending on the selected list
-##### 🕝 1.6_5: Table reports render: Order by list, timestamp
-##### 🕝 1.6_6: migrate client.js to trollblocknet.cat and render table there with proper css styles
-##### 🕝 1.6_7: Show amount of blocked accounts and timestamp of last update in lists table (both subsc. & csv)
-##### 🕝 1.6_8: Show console log in client html (expandable in footer)
+##### ✅ 1.6_1: Clean index.html
+##### ✅ 1.6_2: Create new css for table (horizontal scrolling). 
+##### ✅ 1.6_4: Embed table in trollblocknet.cat/notificacions.html
+
+-----------------------------------------------------------
+
+### tbc-beta_1.7 (node.js server based, not-distributed app)
+
+🕝 Improve current reporting management (more data and styles) and list table and fix bugs:
+
+⚠️ **[Issue #1:](https://github.com/trollblocknet/trollblocknet.glitch.com/issues/2)** 
+server.js --> CSV files are only storing up to 5000 accounts --> HALF FIXED
+
+⚠️ **[Issue #2:](https://github.com/trollblocknet/trollblocknet.glitch.com/issues/3)** 
+client.js -> html reports dynamic table erratic behaviour (does not always render)
+
+#### 🔴 TO-DO List for beta_1.7: ####
+
+##### ✅ 1.7_1: migrate client.js to trollblocknet.cat and render table there with proper css styles
+##### 🕝 1.7_2: Fix Issue 1
+##### ✅ 1.7_3: Fix Issue 2
+
+-----------------------------------------------------------
+
+### tbc-beta_1.8 (node.js server based, not-distributed app)
+
+🕝 Improve current reporting management (more data and styles) and list table and fix bugs:
+
+⚠️ **[Issue #1:](https://github.com/trollblocknet/trollblocknet.glitch.com/issues/2)** 
+server.js --> CSV files are only storing up to 5000 accounts
+
+
+#### 🔴 TO-DO List for beta_1.8: ####
+
+##### 🕝 1.8_1: Parse the tw-handler from App in the amqp message and include it in the reports table (create column)
+##### 🕝 1.8_2: Add timestamp to reports table and insert it from current time (javascript like it in the trollblockbot glitch project)
+##### 🕝 1.8_3: Add totals to reports lists and show message when there are no rows to display
+##### 🕝 1.8_4: Make reports list rows to render in different colors depending on the selected list
+##### 🕝 1.8_5: Table reports render: Order by list, timestamp
+##### 🕝 1.8_6: migrate client.js to trollblocknet.cat and render table there with proper css styles
+##### 🕝 1.8_7: Show amount of blocked accounts and timestamp of last update in lists table (both subsc. & csv)
+##### 🕝 1.8_8: Show console log in client html (expandable in footer)
+##### 🕝 1.8_9: Make the table's first column sticky and the rest horizontally scrollable
 
 -----------------------------------------------------------
 
