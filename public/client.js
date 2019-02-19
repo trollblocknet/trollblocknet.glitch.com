@@ -28,7 +28,18 @@ reportRequest.onreadystatechange = function () {
       $('#content').append('<table id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
 
       $.each(Object.keys(object[0]), function(index, key){
-        $('#jsonTable thead tr').append('<th>' + key + '</th>');
+        if (key == "tw_userID"){
+          $('#jsonTable thead tr').append('<th>ID USUARI</th>');
+        }
+        else if (key == "tweetID"){
+        $('#jsonTable thead tr').append('<th>ID TWEET</th>');
+        }
+        else if (key == "list"){
+        $('#jsonTable thead tr').append('<th>LLISTA</th>');
+        }
+        else if (key == "comments"){
+        $('#jsonTable thead tr').append('<th>COMENTARIS</th>');
+        }
       });	
       $.each(object, function(index, jsonObject){     
         if(Object.keys(jsonObject).length > 0){

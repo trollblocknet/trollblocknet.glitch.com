@@ -44,52 +44,64 @@ retrieveTwitterBlocksAndUpdateDB: function (db,table,client){
   
 retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
    
-  //let tmpFilePath = './public/tmp.csv';
+  //DEFINE CSV PATHS AND VARIABLES
   var csvPath = './public/tmp.csv';
   var newCsvPath = './public/'+table+'.csv';
-  var fileExists = fs.existsSync(csvPath);
-  var twLimitReached = getBit88(table);
-  console.log("[tbc.fs] : get bit88 state --> "+twLimitReached); 
-  console.log("[tbc.twitter] : fileExists --> "+ fileExists +" && twLimitReached --> "+getBit88(table));
-   if (fileExists && !twLimitReached){
-    fs.renameSync(csvPath,newCsvPath, function (err) {
-    if (err) {console.error(err);}
-    else{ console.log('[tbc.fs] : File '+csvPath+' renamed to '+newCsvPath);}
+  
+  
+  //RESET TMP.CSV FILE BEFORE STARTING (NEEDED FOR THE CASES THE CURSORING OPERATION DOES NOT FINISHES HENCE ACTIVATING BIT88)
+   var fileExists = fs.existsSync(csvPath);
+   if (fileExists){
+    fs.unlinkSync(csvPath, function (err) {
+    if (err) {console.error(err.status);}
+    else{ console.log('[tbc.fs] : File '+csvPath+' reset succesful');}
   });
   }
   
-  var params = {count: '5000', cursor:  -1, stringify_ids: true};
+  //RECURSIVE FUNCTION THAT RETRIEVES ALL BLOCKED PROFILE FROM TWITTER (IMPLEMENTS CURSORING / PAGINATION) 
+  var params = {count: '5000', cursor:  -1, stringify_ids: true };
   client.get('blocks/ids', params, function getlist(error, list, response) 	
   {
      if (error) {
+       //IF THE GET REQUEST DOES NOT HAVE A SUCCESS RESPONSE, ABORT
        console.error(error);
-       //ACTIVATE BIT 88
-       console.log("[tbc.fs] : set bit88 state --> true");
-       setBit88(true,table);
      }
      else
      { 
-       //Delete Outdated 'filename'.csv files if exists
-       console.log("[tbc.fs] : set bit88 state --> false");
-       setBit88(false,table);
+       //PERFORM ACTIONS FOR THIS BATCH:
+
+       //FIRST WE INSERT ALL THE PROFILES ID'S WE RECEIVED FROM THIS BATCH TO THE BD
        updateBlockedTable(db,list.ids,table); 
        
+       //THEN WE APPEND ALL THE PROFILES ID'S TO A TEMPORARY CSV FILE. 
        appendTMPCSV(list.ids,csvPath);
-       /*console.log('Current cursor --> '+params.cursor);
-       console.log('Next cursor --> '+list.next_cursor);*/
        
+       //FINALLY WE RECURSIVELY CALL THE GET FUNCTION WE JUST DEFINED AVOBE SO WE CAN GET THE NEXT 
+       //BATCH (CURSOR) IN A SYNCHRONIZED WAY (REQUEST ARE DONE SEQUENTIALLY) 
        if(list.next_cursor != 0) 
        {
          params.cursor = list.next_cursor
          client.get('blocks/ids',params, getlist);
        }
-    }
-  }); 
-  //Once TMP.CSV gets created
+       else
+       {
+       //IF IT's THE LASY BATCH, SAVE TMP TO FINAL CSV  
+          fs.renameSync(csvPath,newCsvPath);
+          console.log('[tbc.fs] : file ' +newCsvPath+ ' has been created successfully'); 
+       }
+    }   
+}); 
   
-  console.log('EXISTS ------------------->'+fs.existsSync(csvPath));
-  if (fs.existsSync(csvPath)==true){
-  fs.renameSync(csvPath,newCsvPath);}
+  //IF ALL THE RECURSIVE REQUEST WERE MADE SUCCESSFULLY UNTIL REACHING THE CURSOR POSITION #0 (INCLUDED), THE BIT88 
+  //IS STILL BE DISABLED, SO WE CAN SAFELY OVERWRITE THE TMP FILE TO THE FINAL ONE 
+  
+  //^^^^^^^---------THIS IS A WRONG APPROACH, IT MUST BE IMPLEMENTED USING CALLBACKS, JUST LIKE ANY HTTP GET REQUEST
+  //(WAIT CODE RESPONSE == 200, THEN RENAME TMP.CSV)
+  
+  //NEW APPROACH USING CALLBACKS
+
+
+
 },
   
 
