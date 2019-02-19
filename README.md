@@ -100,7 +100,7 @@ if the tweeter_id already exists in the db, Show message in console and abort in
 
 -----------------------------------------------------------
 
-### tbc-beta_1.1 to 1.4 (node.js server based, not-distributed app)
+### tbc-beta_1.1 to 1.4 (node.js server based, not-distributed app) --> DEPLOYED
 
 ✅ Create a management system for the agents that perform the blocking tasks so they have one place to check all the troll reports made from the Mobile App. The system will work as follows; there will be a backend connection to the twitter API, therefore, once one agent blocks one troll from the list and refreshes the html page, the backend will retrieve the updated list of blocks (all lists), will compare it with the reports that have been received, and finally, an sql query will filter the results to show only the accounts that still haven't been blocked (for any of the lists that we manage). The system will work in real time, but we have to consider that one agent can only refresh 15 times the management page every 15 minutes (Twitter standard API new 2018 constraints). Anyway, this shall suffice, since there is only one agent managing the lists right now, and the next expansion will be one agent per list, so it still will suffice.
 
@@ -131,7 +131,7 @@ DEPRECATED <-> Create an script to update it every hour  from @trollblockchain b
 
 -----------------------------------------------------------
 
-### tbc-beta_1.5 (node.js server based, not-distributed app)
+### tbc-beta_1.5 (node.js server based, not-distributed app) --> DEPLOYED
 
 ✅ Replace the CSV's system for an automated new one
 
@@ -149,7 +149,7 @@ Done, but the "monthly new logs" feature is still not implemented.
 
 -----------------------------------------------------------
 
-### tbc-beta_1.6 (node.js server based, not-distributed app)
+### tbc-beta_1.6 (node.js server based, not-distributed app) --> DEPLOYED
 
 ✅ Clean index.html and improve css (implement mobile UX for tables)
 
@@ -161,25 +161,51 @@ Done, but the "monthly new logs" feature is still not implemented.
 
 -----------------------------------------------------------
 
-### tbc-beta_1.7 (node.js server based, not-distributed app)
+### tbc-beta_1.7 (node.js server based, not-distributed app) --> DEPLOYED
 
-🕝 Improve current reporting management (more data and styles) and list table and fix bugs:
+✅ Improve current reporting management (more data and styles) and list table and fix Issue 1:
 
 ⚠️ **[Issue #1:](https://github.com/trollblocknet/trollblocknet.glitch.com/issues/2)** 
 server.js --> CSV files are only storing up to 5000 accounts --> HALF FIXED
 
-⚠️ **[Issue #2:](https://github.com/trollblocknet/trollblocknet.glitch.com/issues/3)** 
-client.js -> html reports dynamic table erratic behaviour (does not always render)
-
 #### 🔴 TO-DO List for beta_1.7: ####
 
-##### ✅ 1.7_1: migrate client.js to trollblocknet.cat and render table there 
-##### 🕝 1.7_2: Fix Issue 1
-##### ✅ 1.7_3: Fix Issue 2
+##### ✅ 1.7_1: migrate client.js to trollblocknet.cat and render table from there without embedding html
+##### ✅ 1.7_2: Cursoring for twitter blok/ids requests is now enabled using a recursive function (Nerd God-Level solution found here ->  🤓)
 
 -----------------------------------------------------------
 
 ### tbc-beta_1.8 (node.js server based, not-distributed app)
+
+✅  Fix Issue #2
+
+
+⚠️ **[Issue #2:](https://github.com/trollblocknet/trollblocknet.glitch.com/issues/3)** 
+client.js -> html reports dynamic table erratic behaviour (does not always render)
+
+#### 🔴 TO-DO List for beta_1.8: ####
+
+##### ✅ 1.8_1: Enable asynchronous http requests -> SOLUTION FOUND HERE: <https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Synchronous_and_Asynchronous_Requests> AND HERE <https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/onreadystatechange> AND HERE 
+##### ✅ 1.8_2: Generate table dinamically once (and only once) JSON data reaches client in remote host -> SOLUTION FOUND HERE: <https://stackoverflow.com/questions/51188542/how-to-build-a-dynamic-html-table-from-json-data-using-node-js>
+
+-----------------------------------------------------------
+
+### tbc-beta_1.9 (node.js server based, not-distributed app)
+
+🕝 Apply final Fix to Issue 1
+
+⚠️ **[Issue #1:](https://github.com/trollblocknet/trollblocknet.glitch.com/issues/2)** 
+server.js --> CSV files are only storing up to 5000 accounts --> HALF FIXED
+
+#### 🔴 TO-DO List for beta_1.9: ####
+
+##### 🕝 1.9_1: 
+##### 🕝 1.9_2: 
+
+
+-----------------------------------------------------------
+
+### tbc-beta_1.10 (node.js server based, not-distributed app)
 
 🕝 Improve current reporting management (more data and styles) and list table and fix bugs:
 
