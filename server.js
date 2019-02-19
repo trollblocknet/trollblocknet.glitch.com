@@ -76,7 +76,7 @@ dbApp.use(express.static('public'));
 // init sqlite db
 var fs = require('fs');
 //var dbFile = './.data/tbn_reports2.db';
-var dbFile = './.data/tbn_reports10.db';
+var dbFile = './.data/tbn_reports.db';
 var exists = fs.existsSync(dbFile); 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(dbFile);
