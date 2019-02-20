@@ -166,7 +166,23 @@ log: function (message){
     });
   }
   return;
-}
+},
+  
+  getTotalBlocks: function(filename){
+    //Read number of rows in CSV and return value
+    var contents = fs.readFileSync('./public/'+filename+'.csv')
+    var lines = contents.toString().split('\n').length - 1
+    return lines;
+  },
+
+  
+  
+  getTimestamp: function(filename){
+    //Return CSV file creation date 
+    let timestamp = filename+" timestamp";
+    return timestamp;
+  },
+
   
   
   ///////////END EXPORTS

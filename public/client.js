@@ -1,3 +1,7 @@
+    ///////////////////////////7////////////
+    ///   TABLE RENDERING HTTP REQUEST  ///
+    ///////////////////////////////////////
+
 var reportRequest = new XMLHttpRequest(),
     method = "GET",
     url = "/getReports";
@@ -7,9 +11,7 @@ reportRequest.onreadystatechange = function () {
   if(reportRequest.readyState == 4 && reportRequest.status == 200) {
     //reportRequest.onload = getreportsListener;
     
-    ///////////////////////////
-    ///   TABLE RENDERING   ///
-    ///////////////////////////
+
     var  object = [];
     var  reports = JSON.parse(this.responseText);
      //Iterate through every report and add it to our page
@@ -25,7 +27,7 @@ reportRequest.onreadystatechange = function () {
 
 
     function createTable(){
-      $('#content').append('<table id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
+      $('#reportsContent').append('<table id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
 
       $.each(Object.keys(object[0]), function(index, key){
         if (key == "tw_userID"){
@@ -59,10 +61,72 @@ reportRequest.onreadystatechange = function () {
     
     ///////////////////////////
     
-    console.log("JSON RESPONSE ->>>>>>>"+reportRequest.responseText);
+    console.log("[tbc.client] : /getReports http Response code 200 - OK ->>>>>>> JSON DATA: "+reportRequest.responseText);
   }
 };
 reportRequest.send();
+
+    ///////////////////////////7//////////////////////
+    ///   LIST COUNTERS & TIMESTAMPS HTTP REQUEST  ///
+    /////////////////////////////////////////////////
+
+var totalsRequest = new XMLHttpRequest(),
+    method = "GET",
+    url = "/getTotals";
+
+totalsRequest.open(method, url, true);
+totalsRequest.onreadystatechange = function () {
+  if(totalsRequest.readyState == 4 && totalsRequest.status == 200) {
+    //reportRequest.onload = getreportsListener;
+    
+
+     var  object2 = [];
+     var  totals = JSON.parse(totalsRequest.responseText);
+     //Iterate through every report and add it to our page
+     totals.forEach(function (row2) {
+      
+        var myObj2 = {list: row2.list, total: row2.total};
+        object2.push(myObj2);
+
+      });
+
+    function createTable2(){
+      $('#totalsContent').append('<table id="jsonTable2"><thead><tr></tr></thead><tbody></tbody></table>');
+
+      $.each(Object.keys(object2[0]), function(index, key){
+        if (key == "list"){
+          $('#jsonTable2 thead tr').append('<th>LLISTA</th>');
+        }
+        else if (key == "total"){
+        $('#jsonTable2 thead tr').append('<th>NOMBRE TOTAL DE PERFILS BLOCATS</th>');
+        }
+        /*else if (key == "timestamp"){
+        $('#jsonTable2 thead tr').append('<th>DARERRA ACTUALITZACIÓ</th>');
+        }*/
+      });	
+      $.each(object2, function(index, jsonObject2){     
+        if(Object.keys(jsonObject2).length > 0){
+          var tableRow = '<tr>';
+          $.each(Object.keys(jsonObject2), function(i, key){
+             tableRow += '<td>' + jsonObject2[key] + '</td>';
+          });
+          tableRow += "</tr>";
+          $('#jsonTable2 tbody').append(tableRow);
+        }
+      });
+    }
+
+    $(document).ready(function(){
+      createTable2();
+    });
+    
+    ///////////////////////////
+    
+    console.log("[tbc.client] : /getTotals http Response code 200 - OK ->>>>>>> JSON DATA: "+totalsRequest.responseText);
+  }
+};
+totalsRequest.send();
+
 
 ///////////////////////////////////
 ///   THE END

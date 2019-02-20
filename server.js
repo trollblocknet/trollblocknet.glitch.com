@@ -126,8 +126,11 @@ const corsOptions = {
   }
 }
 
+////////
+// SERVE HTTP /getReports REQUESTS
+///////
 
-dbApp.get('/getReports', cors(corsOptions), function (request, response, next) {
+dbApp.get('/getReports', cors(corsOptions), function (request, response) {
   
       
 // ---------------------------------------------------
@@ -199,6 +202,43 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response, next) {
     //response.json(rows);
   });
   
+});
+
+////////////
+/// SERVE HTTP /getTotals REQUESTS
+///////////
+
+dbApp.get('/getTotals', cors(corsOptions), function (request2, response2, next2) {
+  
+  var totalTrollsBlocked = functions.getTotalBlocks("Trolls");
+  var totalRegimBlocked = functions.getTotalBlocks("Regim");
+  var totalIBEXBlocked = functions.getTotalBlocks("IBEX");
+  
+  /*var trollsTimestamp = functions.getTimestamp("Trolls");
+  var regimTimestamp = functions.getTimestamp("Regim");
+  var IBEXTimestamp = functions.getTimestamp("IBEX");*/
+   
+   var totals = [
+     {
+       "list": "Trolls",
+       "total": totalTrollsBlocked
+       //"timestamp": trollsTimestamp
+     },
+     {
+       "list": "Regim",
+       "total": totalRegimBlocked
+       //"timestamp": regimTimestamp
+     },
+     {
+       "list": "IBEX",
+       "total": totalIBEXBlocked
+       //"timestamp": IBEXTimestamp
+     }
+    ];
+
+   console.log("TOTALS: "+JSON.stringify(totals));
+   response2.send(JSON.stringify(totals));
+
 });
 
 // listen for requests :)
