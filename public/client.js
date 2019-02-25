@@ -30,20 +30,20 @@ reportRequest.onreadystatechange = function () {
 
 
     function createTable(){
-      $('#reportsContent').append('<table id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
+      $('#reportsContent').append('<table class="main-table" id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
 
       $.each(Object.keys(object[0]), function(index, key){
         if (key == "tw_userID"){
-          $('#jsonTable thead tr').append('<th>ID USUARI</th>');
+          $('#jsonTable thead tr').append('<th >ID USUARI</th>');
         }
         else if (key == "screen_name"){
         $('#jsonTable thead tr').append('<th>NOM USUARI</th>');
         }
         else if (key == "tweetID"){
-        $('#jsonTable thead tr').append('<th>ID TWEET</th>');
+        $('#jsonTable thead tr').append('<th class="fixed-side-header" scope="col">ID TWEET</th>');
         }
         else if (key == "report_timestamp"){
-        $('#jsonTable thead tr').append('<th>DATA</th>');
+        $('#jsonTable thead tr').append('<th>DATA REPORT</th>');
         }
         else if (key == "list"){
         $('#jsonTable thead tr').append('<th>LLISTA</th>');
@@ -54,9 +54,23 @@ reportRequest.onreadystatechange = function () {
       });	
       $.each(object, function(index, jsonObject){     
         if(Object.keys(jsonObject).length > 0){
-          var tableRow = '<tr>';
+          
+            var tableRow = '<tr>';
+          
           $.each(Object.keys(jsonObject), function(i, key){
-             tableRow += '<td>' + jsonObject[key] + '</td>';
+            //console.log("KEY + TD -------------------->"+key+" , "+jsonObject[key]);
+            
+            //IF FIRST COLUMN SET STICKY CLASS
+          var firstColumn = false;
+          firstColumn = key == "tweetID";
+          if (firstColumn){
+            tableRow += '<td class="fixed-side" scope="col">';
+          }
+          //ELSE 
+          else{
+            tableRow += '<td>'; 
+          }
+             tableRow += jsonObject[key] + '</td>';
           });
           tableRow += "</tr>";
           $('#jsonTable tbody').append(tableRow);

@@ -244,7 +244,7 @@ dbApp.get('/getTotals', cors(corsOptions), function (request2, response2, next2)
      }
     ];
 
-   console.log("TOTALS: "+JSON.stringify(totals));
+   //console.log("TOTALS: "+JSON.stringify(totals));
    response2.send(JSON.stringify(totals));
 
 });

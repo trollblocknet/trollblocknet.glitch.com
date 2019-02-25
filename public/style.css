@@ -7,109 +7,97 @@ html {
 
 html, body {
   max-width: 100vw;
-}
-
-table {
-  margin: 10px;
-  border-collapse: collapse;
-  overflow-x: auto;
-  display: block;
-  width: fit-content;
-  max-width: 900px;
-  box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-}
-
-td, th {
-  border: solid rgb(200, 200, 200) 1px;
-  padding:13px 15px;
-}
-
-th {
- 
-  background-color: rgb(190, 220, 250);
-  
-  word-break:normal;
-	border-color:#999;
-	color:#444;
-
-	text-align:center;
-  
-  text-transform: uppercase;
-border-style:solid;
-	border-width:1px;
-  border-bottom: rgb(50, 50, 100) solid 2px;
-  border-top: none;
-  padding:13px 15px;
-}
-
-td {
-  white-space: nowrap;
-  border-style:solid;
-	border-width:1px;
-  word-break:normal;
-	border-color:#999;
-	color:#444;
-	background-color:#F7FDFA;
-	text-align:center;
-  padding:13px 15px;
-}
-
-td:first-of-type, th:first-of-type {
-  border-left: none;
-}
-
-td:last-of-type, th:last-of-type {
-  border-right: none;
-}
-
-/* CUSTOM CARDS --> https://codepen.io/sdthornton/pen/wBZdXq */
-
-.card {
-  background: #ddd;
-  border-radius: 2px;
-  display: inline-block;
-  /*height: 300px;*/
-  margin: 1rem;
   position: relative;
-  max-width: 650px;
-   padding: 20px 40px 20px 40px;
-  font-size: 13px;
-  
-}
-
-.card h4{
-  /*margin-bottom:25px;*/
-  font-size: 16px;
-}
-
-.card-3 {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  margin:auto;
-}
-
-/* CUSTOM <LI> --> MARGINS */
-
-.header.content > img,
-.hedaer.content > welcometitle {
-    display: inline-block;
-}
-
-.customTitle {
-font-size: 50px;
-margin-left: 10px;
-font-style: italic;
-color:blue;
-}
-
-.ribbon {
-color:yellow;
-  -webkit-text-stroke-width: 1px;
-   -webkit-text-stroke-color: black;
 }
 
 .container {
   float: left;
+  width:47%;
+  margin:1.5%;
+}
+
+/******************* TABLES ******************/
+
+/* SCROLLING TABLE WITH STICKY FIRST COLUMN */
+
+.table-scroll {
+	position:relative;
+	max-width:100%;
+	margin:auto;
+	overflow:hidden;
+	border:0px;
+}
+.table-wrap {
+	width:100%;
+	overflow:auto;
+}
+.table-scroll table {
+	width:100%;
+	margin:auto;
+	border-collapse:separate;
+	border-spacing:0;
+}
+.table-scroll th{ 
+	font-family:inherit;
+	font-size:inherit;
+	font-weight:bold;
+	padding:13px 15px;
+	border-style:solid;
+	text-align:center;
+	border-width:0.5px;
+	overflow:hidden;
+	word-break:normal;
+	border-color:#999;
+	color:#f5ff00;
+	background-color:#000;
 
 }
+
+ .table-scroll td {
+	font-family:inherit;
+	font-size:inherit;
+	padding:13px 15px;
+	border-style:solid;
+	border-width:0.5px;
+	overflow:hidden;
+	word-break:normal;
+	border-color:#999;
+	color:#444;
+	background-color:#F7FDFA;
+	text-align:center;
+}
+.table-scroll thead, .table-scroll tfoot {
+	background:#f9f9f9;
+}
+.clone {
+	position:absolute;
+	top:0;
+	left:0;
+	pointer-events:none;
+}
+.clone th, .clone td {
+	visibility:hidden
+}
+.clone td, .clone th {
+	border-color:transparent
+}
+.clone tbody th {
+	visibility:visible;
+	color:red;
+}
+.clone .fixed-side {
+	border:1px solid #000;
+	background:#eee;
+	visibility:visible;
+}
+
+.fixed-side-header {
+	border:1px solid #000;
+	background:#000;
+	visibility:visible;
+}
+.clone thead, .clone tfoot{background:transparent;}
+
+/**************** END TABLES ******************/
 
 
