@@ -10,12 +10,12 @@ html, body {
 }
 
 table {
- margin: auto;
+  margin: 10px;
   border-collapse: collapse;
   overflow-x: auto;
   display: block;
   width: fit-content;
-  max-width: 700px;
+  max-width: 900px;
   box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
 }
 

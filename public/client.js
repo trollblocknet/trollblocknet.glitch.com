@@ -20,7 +20,8 @@ reportRequest.onreadystatechange = function () {
  reports.forEach(function (row) {
    
     var UrlTweetID = "<a target=\"_blank\" href=https://www.twitter.com/userid/status/" + row.tweetID + ">" + row.tweetID + "</a>";
-    var myObj = {tw_userID: row.tw_userID, tweetID: UrlTweetID, list: row.list, comments: row.comments};
+   var UrlTwitterProfile = "<a target=\"_blank\" href=https://www.twitter.com/" + row.screen_name + ">@" + row.screen_name + "</a>";
+    var myObj = {tweetID: UrlTweetID, tw_userID: row.tw_userID, screen_name: UrlTwitterProfile, report_timestamp: row.report_timestamp, list: row.list, comments: row.comments};
     object.push(myObj);
    
   });
@@ -35,8 +36,14 @@ reportRequest.onreadystatechange = function () {
         if (key == "tw_userID"){
           $('#jsonTable thead tr').append('<th>ID USUARI</th>');
         }
+        else if (key == "screen_name"){
+        $('#jsonTable thead tr').append('<th>NOM USUARI</th>');
+        }
         else if (key == "tweetID"){
         $('#jsonTable thead tr').append('<th>ID TWEET</th>');
+        }
+        else if (key == "report_timestamp"){
+        $('#jsonTable thead tr').append('<th>DATA</th>');
         }
         else if (key == "list"){
         $('#jsonTable thead tr').append('<th>LLISTA</th>');

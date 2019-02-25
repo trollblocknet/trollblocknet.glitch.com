@@ -36,6 +36,8 @@ var functions = require('./functions');
 
 // ************************************************************************************
 
+var report_timestamp = "NULL";
+var screen_name = "NULL";
 var tw_userID = "NULL";
 var tweetID = "NULL";
 var list = "NULL";
@@ -76,7 +78,7 @@ dbApp.use(express.static('public'));
 // init sqlite db
 var fs = require('fs');
 //var dbFile = './.data/tbn_reports2.db';
-var dbFile = './.data/tbn_reports.db';
+var dbFile = './.data/tbn_reports3.db';
 var exists = fs.existsSync(dbFile); 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(dbFile);
@@ -84,7 +86,8 @@ var db = new sqlite3.Database(dbFile);
 // if ./.data/sqlite.db does not exist, create it, otherwise print records to console
 db.serialize(function(){
   if (!exists) {
-    db.run('CREATE TABLE Reports (tw_userID TEXT, tweetID TEXT, list TEXT, comments TEXT, PRIMARY KEY (tweetID))');
+    db.run('CREATE TABLE Reports (report_timestamp TEXT,screen_name TEXT,tw_userID TEXT,tweetID TEXT,list TEXT,comments TEXT,PRIMARY KEY (tweetID))');
+   
     functions.log('New table "Reports" created!');
     
     db.run('CREATE TABLE Trolls (tw_userID TEXT, PRIMARY KEY (tw_userID))');
@@ -287,19 +290,22 @@ const connect = async () => {
     //DISECT MESSAGE IN 4 VARIABLES 
     var disectedMessage = message.toString().split(";");
     
-    tw_userID = disectedMessage[0];
-    tweetID = disectedMessage[1];
-    list = disectedMessage[2];
-    comments = disectedMessage[3];
+    console.log("TIMESTAMP -----------------------------------------------> "+disectedMessage[0]);
+    report_timestamp = disectedMessage[0];
+    screen_name = disectedMessage[1];
+    tw_userID = disectedMessage[2];
+    tweetID = disectedMessage[3];
+    list = disectedMessage[4];
+    comments = disectedMessage[5];
       
     //INSERT DISECTED MESSAGE VARIABLES, TWITTER USER ID & POST DATA RECEIVED IN A NEW DB ROW
     db.serialize(function() {
       
-      db.run('INSERT INTO Reports (tw_userID,tweetID,list,comments) VALUES (?,?,?,?)',tw_userID,tweetID,list,comments,function(err){
-        if(err){  
+      db.run('INSERT INTO Reports (report_timestamp,screen_name,tw_userID,tweetID,list,comments) VALUES (?,?,?,?,?,?)',report_timestamp,screen_name,tw_userID,tweetID,list,comments,function(err){
+        if(err){
           let logEntry ='[tbc.sqlite] : ERROR! : '+ err.message+' --> '+tweetID;
-          
-          return functions.log(logEntry); }
+          return functions.log(logEntry); 
+        }
         functions.log(`[tbc.sqlite] : Rows inserted in Reports Table -> ${this.changes}`);
       });
     });
