@@ -219,22 +219,22 @@ dbApp.get('/getTotals', cors(corsOptions), function (request2, response2, next2)
    
    var totals = [
      {
-       "list": '<div style="margin-top:8%;float:left;"><!--<div style="text-align:left;font-size:30px;float:left;margin-right:auto;margin-top:3%;margin-left:auto;\"><p>☠️<\/p></div>--><div style="text-align:center;float:center;\"><p>Trolls unionistes i \"Infilitrats Indepes\"<\/p></div></div>',
-       "total": '<span style="font-size:24px;font-weight:bold;\"\>'+totalTrollsBlocked+'<\/span>',
+       "list": '<p style="text-align:center;\">Trolls unionistes i \"Infilitrats Indepes\"<\/p>',
+       "total": '<span style="font-size:24px;font-weight:bold;\">'+totalTrollsBlocked+'<\/span>',
        "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/trolls/\" target=\"blank_\">Subscriure\'m-hi</a>',
        "csvLink": '<a href=\"http://trollblocknet.cat/llistes/trolls.csv\" target=\"blank_\">trolls.csv</a>'
        //"timestamp": trollsTimestamp
      },
      {
-       "list": '<div style="margin-top:8%"><!--<p style="text-align:left;font-size:30px;float:left;margin-right:3%;margin-top:3%;margin-left:3%;\">☢️<\/p>--><p style="text-align:center;float:center;\">Col·laboradors amb el \"Règim del 78\"<\/p></div>',
-       "total": '<span style="font-size:24px;font-weight:bold;\"\>'+totalRegimBlocked+'<\/span>',
+       "list": '<p style="text-align:center;\">Col·laboradors amb el \"Règim del 78\"<\/p>',
+       "total": '<span style="font-size:24px;font-weight:bold;\">'+totalRegimBlocked+'<\/span>',
       "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/regim78/\" target=\"blank_\">Subscriure\'m-hi</a>',
        "csvLink": '<a href=\"http://trollblocknet.cat/llistes/regim78.csv\" target=\"blank_\">regim78.csv</a>'
        //"timestamp": regimTimestamp
      },
      {
-       "list": '<div style="margin-top:8%"><!--<p style="text-align:left;font-size:30px;float:left;margin-right:3%;margin-top:3%;margin-left:3%;\">📉<\/p>--><p style="text-align:center;float:center;\">Empreses de l\'IBEX-35 i financeres del Règim<\/p></div>', 
-       "total": '<span style="font-size:24px;font-weight:bold;\"\>'+totalIBEXBlocked+'<\/span>',
+       "list": '<p style="text-align:center;\">Empreses de l\'IBEX-35 i financeres del Règim<\/p>', 
+       "total": '<span style="font-size:24px;font-weight:bold;\">'+totalIBEXBlocked+'<\/span>',
        "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/trolls/\" target=\"blank_\">Subscriure\'m-hi</a>',
        "csvLink": '<a href=\"http://trollblocknet.cat/llistes/IBEX35.csv\" target=\"blank_\">IBEX35.csv</a>'
        //"timestamp": IBEXTimestamp
