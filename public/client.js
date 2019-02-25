@@ -1,3 +1,5 @@
+
+
     ///////////////////////////7////////////
     ///   TABLE RENDERING HTTP REQUEST  ///
     ///////////////////////////////////////
@@ -85,7 +87,7 @@ totalsRequest.onreadystatechange = function () {
      //Iterate through every report and add it to our page
      totals.forEach(function (row2) {
       
-        var myObj2 = {list: row2.list, total: row2.total};
+        var myObj2 = {list: row2.list, total: row2.total, subscriptionLink: row2.subscriptionLink, csvLink: row2.csvLink };
         object2.push(myObj2);
 
       });
@@ -93,16 +95,19 @@ totalsRequest.onreadystatechange = function () {
     function createTable2(){
       $('#totalsContent').append('<table id="jsonTable2"><thead><tr></tr></thead><tbody></tbody></table>');
 
-      $.each(Object.keys(object2[0]), function(index, key){
+      $.each(Object.keys(object2[0]), function(index, key){ 
         if (key == "list"){
           $('#jsonTable2 thead tr').append('<th>LLISTA</th>');
         }
         else if (key == "total"){
-        $('#jsonTable2 thead tr').append('<th>NOMBRE TOTAL DE PERFILS BLOCATS</th>');
+        $('#jsonTable2 thead tr').append('<th>TOTAL AFEGITS</th>');
         }
-        /*else if (key == "timestamp"){
-        $('#jsonTable2 thead tr').append('<th>DARERRA ACTUALITZACIÓ</th>');
-        }*/
+        else if (key == "subscriptionLink"){
+        $('#jsonTable2 thead tr').append('<th>ENLLAÇ DE SUBSCRIPCIÓ AUTOMÀTICA</th>');
+        }
+        else if (key == "csvLink"){
+        $('#jsonTable2 thead tr').append('<th>DESCÀRREGA D\'ARXIU CSV (SOLAMENT PC I MAC)</th>');
+        }
       });	
       $.each(object2, function(index, jsonObject2){     
         if(Object.keys(jsonObject2).length > 0){
