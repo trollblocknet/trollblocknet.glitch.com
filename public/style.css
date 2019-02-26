@@ -7,9 +7,23 @@
 /*CUSTOM*/
 
 .container {
-  float: left;
-  width:47%;
-  margin:1.5%;
+  display: inline-block;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  vertical-align: top;
+  width:46.3%;
+  margin:0% 0% 0.5% 0.3% ;
+  padding:1.5% 1.5% 1.5% 1.5% ;
+  background:#fff;
+  border-radius: 10px;
+   border-width: 0.2px;
+  border-style: solid;
+  border-color:#bfbfbf;
+  
+}
+
+.container h2 {
+color:#827f7f;
 }
 
 
@@ -215,6 +229,7 @@ body {
   font-weight: 300;
   line-height: 1.625em;
   position: relative;
+background: #f7f7f7;
 }
 
 ol, ul {

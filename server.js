@@ -268,8 +268,9 @@ dbApp.get('/getRecents', cors(corsOptions), function (request, response) {
 				                 "UNION "+
 				                 "SELECT tw_userID FROM Regim WHERE Reports.tw_userID = Regim.tw_userID "+
 				                 "UNION "+
-				                 "SELECT tw_userID FROM Ibex WHERE Reports.tw_userID = Ibex.tw_userID)"+
-                        "ORDER BY report_timestamp";
+				                 "SELECT tw_userID FROM Ibex WHERE Reports.tw_userID = Ibex.tw_userID) "+
+                         "ORDER BY report_timestamp "+
+                         "LIMIT 10";
   
   
   db.all(dbQueryRecents, function(err, rows) {

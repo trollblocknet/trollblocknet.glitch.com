@@ -170,7 +170,8 @@ recentsRequest.onreadystatechange = function () {
      //Iterate through every report and add it to our page
      totals.forEach(function (row3) {
       
-        var myObj3 = { screen_name: row3.screen_name, list : row3.list, report_timestamp: row3.report_timestamp };
+        var UrlTwitterProfile = "<a target=\"_blank\" href=https://www.twitter.com/" + row3.screen_name + ">@" + row3.screen_name + "</a>";
+        var myObj3 = { screen_name: UrlTwitterProfile, list : row3.list, report_timestamp: row3.report_timestamp };
         object3.push(myObj3);
 
       });
