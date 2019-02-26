@@ -2,9 +2,9 @@
 
 🗨️ TrollBlockChain DAAP - Trolls Distributed Ledger / DB (BlockChain Implementation) - @trollblocknet
 
-🗨️ Current Production Version: tbc-beta_1.7
+🗨️ Current Production Version: tbc-beta_1.10
 
-🗨️ Current Developer Version: tbc-beta_1.8
+🗨️ Current Development Version: tbc-beta_1.11
 
 🔫 App triggered by: cron-job.org --> "TrollBlockNet Core Backend - empty rabbitmq queue every 15 mins"
 

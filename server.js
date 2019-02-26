@@ -36,6 +36,8 @@ var functions = require('./functions');
 
 // ************************************************************************************
 
+var report_timestamp = "NULL";
+var screen_name = "NULL";
 var tw_userID = "NULL";
 var tweetID = "NULL";
 var list = "NULL";
@@ -76,7 +78,7 @@ dbApp.use(express.static('public'));
 // init sqlite db
 var fs = require('fs');
 //var dbFile = './.data/tbn_reports2.db';
-var dbFile = './.data/tbn_reports.db';
+var dbFile = './.data/tbn_reports3.db';
 var exists = fs.existsSync(dbFile); 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(dbFile);
@@ -84,7 +86,8 @@ var db = new sqlite3.Database(dbFile);
 // if ./.data/sqlite.db does not exist, create it, otherwise print records to console
 db.serialize(function(){
   if (!exists) {
-    db.run('CREATE TABLE Reports (tw_userID TEXT, tweetID TEXT, list TEXT, comments TEXT, PRIMARY KEY (tweetID))');
+    db.run('CREATE TABLE Reports (report_timestamp TEXT,screen_name TEXT,tw_userID TEXT,tweetID TEXT,list TEXT,comments TEXT,PRIMARY KEY (tweetID))');
+   
     functions.log('New table "Reports" created!');
     
     db.run('CREATE TABLE Trolls (tw_userID TEXT, PRIMARY KEY (tw_userID))');
@@ -219,29 +222,29 @@ dbApp.get('/getTotals', cors(corsOptions), function (request2, response2, next2)
    
    var totals = [
      {
-       "list": '<div style="margin-top:8%;float:left;"><!--<div style="text-align:left;font-size:30px;float:left;margin-right:auto;margin-top:3%;margin-left:auto;\"><p>☠️<\/p></div>--><div style="text-align:center;float:center;\"><p>Trolls unionistes i \"Infilitrats Indepes\"<\/p></div></div>',
-       "total": '<span style="font-size:24px;font-weight:bold;\"\>'+totalTrollsBlocked+'<\/span>',
+       "list": '<p style="text-align:center;\">Trolls unionistes i \"Infilitrats Indepes\"<\/p>',
+       "total": '<span style="font-size:24px;font-weight:bold;\">'+totalTrollsBlocked+'<\/span>',
        "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/trolls/\" target=\"blank_\">Subscriure\'m-hi</a>',
        "csvLink": '<a href=\"http://trollblocknet.cat/llistes/trolls.csv\" target=\"blank_\">trolls.csv</a>'
        //"timestamp": trollsTimestamp
      },
      {
-       "list": '<div style="margin-top:8%"><!--<p style="text-align:left;font-size:30px;float:left;margin-right:3%;margin-top:3%;margin-left:3%;\">☢️<\/p>--><p style="text-align:center;float:center;\">Col·laboradors amb el \"Règim del 78\"<\/p></div>',
-       "total": '<span style="font-size:24px;font-weight:bold;\"\>'+totalRegimBlocked+'<\/span>',
+       "list": '<p style="text-align:center;\">Col·laboradors amb el \"Règim del 78\"<\/p>',
+       "total": '<span style="font-size:24px;font-weight:bold;\">'+totalRegimBlocked+'<\/span>',
       "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/regim78/\" target=\"blank_\">Subscriure\'m-hi</a>',
        "csvLink": '<a href=\"http://trollblocknet.cat/llistes/regim78.csv\" target=\"blank_\">regim78.csv</a>'
        //"timestamp": regimTimestamp
      },
      {
-       "list": '<div style="margin-top:8%"><!--<p style="text-align:left;font-size:30px;float:left;margin-right:3%;margin-top:3%;margin-left:3%;\">📉<\/p>--><p style="text-align:center;float:center;\">Empreses de l\'IBEX-35 i financeres del Règim<\/p></div>', 
-       "total": '<span style="font-size:24px;font-weight:bold;\"\>'+totalIBEXBlocked+'<\/span>',
+       "list": '<p style="text-align:center;\">Empreses de l\'IBEX-35 i financeres del Règim<\/p>', 
+       "total": '<span style="font-size:24px;font-weight:bold;\">'+totalIBEXBlocked+'<\/span>',
        "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/trolls/\" target=\"blank_\">Subscriure\'m-hi</a>',
        "csvLink": '<a href=\"http://trollblocknet.cat/llistes/IBEX35.csv\" target=\"blank_\">IBEX35.csv</a>'
        //"timestamp": IBEXTimestamp
      }
     ];
 
-   console.log("TOTALS: "+JSON.stringify(totals));
+   //console.log("TOTALS: "+JSON.stringify(totals));
    response2.send(JSON.stringify(totals));
 
 });
@@ -287,19 +290,22 @@ const connect = async () => {
     //DISECT MESSAGE IN 4 VARIABLES 
     var disectedMessage = message.toString().split(";");
     
-    tw_userID = disectedMessage[0];
-    tweetID = disectedMessage[1];
-    list = disectedMessage[2];
-    comments = disectedMessage[3];
+    console.log("TIMESTAMP -----------------------------------------------> "+disectedMessage[0]);
+    report_timestamp = disectedMessage[0];
+    screen_name = disectedMessage[1];
+    tw_userID = disectedMessage[2];
+    tweetID = disectedMessage[3];
+    list = disectedMessage[4];
+    comments = disectedMessage[5];
       
     //INSERT DISECTED MESSAGE VARIABLES, TWITTER USER ID & POST DATA RECEIVED IN A NEW DB ROW
     db.serialize(function() {
       
-      db.run('INSERT INTO Reports (tw_userID,tweetID,list,comments) VALUES (?,?,?,?)',tw_userID,tweetID,list,comments,function(err){
-        if(err){  
+      db.run('INSERT INTO Reports (report_timestamp,screen_name,tw_userID,tweetID,list,comments) VALUES (?,?,?,?,?,?)',report_timestamp,screen_name,tw_userID,tweetID,list,comments,function(err){
+        if(err){
           let logEntry ='[tbc.sqlite] : ERROR! : '+ err.message+' --> '+tweetID;
-          
-          return functions.log(logEntry); }
+          return functions.log(logEntry); 
+        }
         functions.log(`[tbc.sqlite] : Rows inserted in Reports Table -> ${this.changes}`);
       });
     });

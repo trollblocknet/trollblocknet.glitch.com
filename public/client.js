@@ -1,3 +1,5 @@
+
+
     ///////////////////////////7////////////
     ///   TABLE RENDERING HTTP REQUEST  ///
     ///////////////////////////////////////
@@ -18,7 +20,8 @@ reportRequest.onreadystatechange = function () {
  reports.forEach(function (row) {
    
     var UrlTweetID = "<a target=\"_blank\" href=https://www.twitter.com/userid/status/" + row.tweetID + ">" + row.tweetID + "</a>";
-    var myObj = {tw_userID: row.tw_userID, tweetID: UrlTweetID, list: row.list, comments: row.comments};
+   var UrlTwitterProfile = "<a target=\"_blank\" href=https://www.twitter.com/" + row.screen_name + ">@" + row.screen_name + "</a>";
+    var myObj = {tweetID: UrlTweetID, tw_userID: row.tw_userID, screen_name: UrlTwitterProfile, report_timestamp: row.report_timestamp, list: row.list, comments: row.comments};
     object.push(myObj);
    
   });
@@ -27,14 +30,20 @@ reportRequest.onreadystatechange = function () {
 
 
     function createTable(){
-      $('#reportsContent').append('<table id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
+      $('#reportsContent').append('<table class="main-table" id="jsonTable"><thead><tr></tr></thead><tbody></tbody></table>');
 
       $.each(Object.keys(object[0]), function(index, key){
         if (key == "tw_userID"){
-          $('#jsonTable thead tr').append('<th>ID USUARI</th>');
+          $('#jsonTable thead tr').append('<th >ID USUARI</th>');
+        }
+        else if (key == "screen_name"){
+        $('#jsonTable thead tr').append('<th>NOM USUARI</th>');
         }
         else if (key == "tweetID"){
-        $('#jsonTable thead tr').append('<th>ID TWEET</th>');
+        $('#jsonTable thead tr').append('<th class="fixed-side-header" scope="col">ID TWEET</th>');
+        }
+        else if (key == "report_timestamp"){
+        $('#jsonTable thead tr').append('<th>DATA REPORT</th>');
         }
         else if (key == "list"){
         $('#jsonTable thead tr').append('<th>LLISTA</th>');
@@ -45,9 +54,23 @@ reportRequest.onreadystatechange = function () {
       });	
       $.each(object, function(index, jsonObject){     
         if(Object.keys(jsonObject).length > 0){
-          var tableRow = '<tr>';
+          
+            var tableRow = '<tr>';
+          
           $.each(Object.keys(jsonObject), function(i, key){
-             tableRow += '<td>' + jsonObject[key] + '</td>';
+            //console.log("KEY + TD -------------------->"+key+" , "+jsonObject[key]);
+            
+            //IF FIRST COLUMN SET STICKY CLASS
+          var firstColumn = false;
+          firstColumn = key == "tweetID";
+          if (firstColumn){
+            tableRow += '<td class="fixed-side" scope="col">';
+          }
+          //ELSE 
+          else{
+            tableRow += '<td>'; 
+          }
+             tableRow += jsonObject[key] + '</td>';
           });
           tableRow += "</tr>";
           $('#jsonTable tbody').append(tableRow);
@@ -85,7 +108,7 @@ totalsRequest.onreadystatechange = function () {
      //Iterate through every report and add it to our page
      totals.forEach(function (row2) {
       
-        var myObj2 = {list: row2.list, total: row2.total};
+        var myObj2 = {list: row2.list, total: row2.total, subscriptionLink: row2.subscriptionLink, csvLink: row2.csvLink };
         object2.push(myObj2);
 
       });
@@ -93,16 +116,19 @@ totalsRequest.onreadystatechange = function () {
     function createTable2(){
       $('#totalsContent').append('<table id="jsonTable2"><thead><tr></tr></thead><tbody></tbody></table>');
 
-      $.each(Object.keys(object2[0]), function(index, key){
+      $.each(Object.keys(object2[0]), function(index, key){ 
         if (key == "list"){
           $('#jsonTable2 thead tr').append('<th>LLISTA</th>');
         }
         else if (key == "total"){
-        $('#jsonTable2 thead tr').append('<th>NOMBRE TOTAL DE PERFILS BLOCATS</th>');
+        $('#jsonTable2 thead tr').append('<th>TOTAL AFEGITS</th>');
         }
-        /*else if (key == "timestamp"){
-        $('#jsonTable2 thead tr').append('<th>DARERRA ACTUALITZACIÓ</th>');
-        }*/
+        else if (key == "subscriptionLink"){
+        $('#jsonTable2 thead tr').append('<th>ENLLAÇ DE SUBSCRIPCIÓ AUTOMÀTICA</th>');
+        }
+        else if (key == "csvLink"){
+        $('#jsonTable2 thead tr').append('<th>DESCÀRREGA D\'ARXIU CSV (SOLAMENT PC I MAC)</th>');
+        }
       });	
       $.each(object2, function(index, jsonObject2){     
         if(Object.keys(jsonObject2).length > 0){

@@ -20,33 +20,59 @@
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="/style.css">
     
-    <!--<script type="text/javascript" src="/client.js" async defer onload="alert('client.js ready');"></script>-->
-    <script type="text/javascript" src="/client.js" async defer></script>
+    
    
     <!-- import the webpage's client-side javascript file -->
     
   </head>
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+  <script>jQuery(document).ready(function() {
+   jQuery(".main-table").clone(true).appendTo('#table-scroll').addClass('clone');   
+ });</script>
+  <script type="text/javascript" src="/client.js" async defer></script>
   <body>
 
    <div class="container">
-     
-     <div>
-       <!--<div id="reportsContent"></div>-->
-       <div id="totalsContent"></div>
+     <h2>📇 LLISTATS DE PERFILS PER BLOQUEJAR</h2> 
+     <div class="table-scroll">
+      <div class="table-wrap">
+         <div id="totalsContent"></div>
+      </div>
      </div>
-     
-     
+   </div>
+
+    
+   <div class="container">
+     <h2>🔔 PERFILS REPORTATS PENDENTS DE VERIFICAR I AFEGIR A LES LLISTES:</h2>
+     <div  id="table-scroll" class="table-scroll">
+      <div class="table-wrap">
+         <div id="reportsContent"></div>
+      </div>
+      <div class="img-text">		
+        <div style="float:left"><p><a onclick="">🔄</a> | <a onclick="">❓</a></p> </div><div style="float:right"><p>Last Updated: <i>timestamp</i> | API Status - 💚❌</p></div><!--(show error dialog if API limit is reached and inform of restingthe time)-->
+      </div>
+     </div>
+   </div>
+    
+    <div class="container">
+      <h2>🔔 REPORTAR TWEETS PER LOTS (CARREGAR FITXER CSV):</h2>
+     <input type="file" name="file" id="file" accept="text/*" multiple>
    </div>
     
      <div class="container">
-     
-     <div>
-       <!--<div id="reportsContent"></div>-->
-       <div id="reportsContent"></div>
-     </div>
-     
-     
+      <h2>🔔 DESCARREGAR SEGUIDORS DE... (FITXER CSV):</h2>
+     <input type="text" name="file2" id="file2" accept="text/*">
    </div>
+    
+    <div class="container">
+      <h2>🔔 OBTENIR LLISTAT DE TWEETS PER HASHTAG (FITXER CSV):</h2>
+     <input type="text" name="file2" id="file2" accept="text/*">
+   </div>
+    
+    
+    
   
     <!-- include the Glitch button to show what the webpage is about and
           to make it easier for folks to view source and remix -->
@@ -54,9 +80,7 @@
     
     
     <script src="https://button.glitch.me/button.js"></script>
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
-            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
-            crossorigin="anonymous"></script>
+
     <!--<script type="text/javascript" src="/client.js"></script>-->
     
   </body>
