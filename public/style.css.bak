@@ -1,0 +1,103 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  font-family: helvetica;
+}
+
+html, body {
+  max-width: 100vw;
+  position: relative;
+}
+
+.container {
+  float: left;
+  width:47%;
+  margin:1.5%;
+}
+
+/******************* TABLES ******************/
+
+/* SCROLLING TABLE WITH STICKY FIRST COLUMN */
+
+.table-scroll {
+	position:relative;
+	max-width:100%;
+	margin:auto;
+	overflow:hidden;
+	border:0px;
+}
+.table-wrap {
+	width:100%;
+	overflow:auto;
+}
+.table-scroll table {
+	width:100%;
+	margin:auto;
+	border-collapse:separate;
+	border-spacing:0;
+}
+.table-scroll th{ 
+	font-family:inherit;
+	font-size:inherit;
+	font-weight:bold;
+	padding:13px 15px;
+	border-style:solid;
+	text-align:center;
+	border-width:0.5px;
+	overflow:hidden;
+	word-break:normal;
+	border-color:#999;
+	color:#f5ff00;
+	background-color:#000;
+
+}
+
+ .table-scroll td {
+	font-family:inherit;
+	font-size:inherit;
+	padding:13px 15px;
+	border-style:solid;
+	border-width:0.5px;
+	overflow:hidden;
+	word-break:normal;
+	border-color:#999;
+	color:#444;
+	background-color:#F7FDFA;
+	text-align:center;
+}
+.table-scroll thead, .table-scroll tfoot {
+	background:#f9f9f9;
+}
+.clone {
+	position:absolute;
+	top:0;
+	left:0;
+	pointer-events:none;
+}
+.clone th, .clone td {
+	visibility:hidden
+}
+.clone td, .clone th {
+	border-color:transparent
+}
+.clone tbody th {
+	visibility:visible;
+	color:red;
+}
+.clone .fixed-side {
+	border:1px solid #000;
+	background:#eee;
+	visibility:visible;
+}
+
+.fixed-side-header {
+	border:1px solid #000;
+	background:#000;
+	visibility:visible;
+}
+.clone thead, .clone tfoot{background:transparent;}
+
+/**************** END TABLES ******************/
+
+

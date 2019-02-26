@@ -1,6 +1,6 @@
 
 
-    ///////////////////////////7////////////
+    ////////////////////////////////////////
     ///   TABLE RENDERING HTTP REQUEST  ///
     ///////////////////////////////////////
 
@@ -153,6 +153,65 @@ totalsRequest.onreadystatechange = function () {
 };
 totalsRequest.send();
 
+////////////////////////////
+/////// GET RECENTS ///////
+//////////////////////////
+
+var recentsRequest = new XMLHttpRequest(),
+    method = "GET",
+    url = "/getRecents";
+
+recentsRequest.open(method, url, true);
+recentsRequest.onreadystatechange = function () {
+  if(recentsRequest.readyState == 4 && recentsRequest.status == 200) {
+
+     var  object3 = [];
+     var  totals = JSON.parse(recentsRequest.responseText);
+     //Iterate through every report and add it to our page
+     totals.forEach(function (row3) {
+      
+        var UrlTwitterProfile = "<a target=\"_blank\" href=https://www.twitter.com/" + row3.screen_name + ">@" + row3.screen_name + "</a>";
+        var myObj3 = { screen_name: UrlTwitterProfile, list : row3.list, report_timestamp: row3.report_timestamp };
+        object3.push(myObj3);
+
+      });
+
+    function createTable3(){
+      $('#recentsContent').append('<table id="jsonTable3"><thead><tr></tr></thead><tbody></tbody></table>');
+
+      $.each(Object.keys(object3[0]), function(index, key){ 
+        if (key == "screen_name"){
+          $('#jsonTable3 thead tr').append('<th>NOM USUARI</th>');
+        }
+        else if (key == "list"){
+        $('#jsonTable3 thead tr').append('<th>LLISTA</th>');
+        }
+        else if (key == "report_timestamp"){
+        $('#jsonTable3 thead tr').append('<th>DATA REPORT</th>');
+        }
+      });	
+      $.each(object3, function(index, jsonObject3){     
+        if(Object.keys(jsonObject3).length > 0){
+          var tableRow = '<tr>';
+          $.each(Object.keys(jsonObject3), function(i, key){
+             tableRow += '<td>' + jsonObject3[key] + '</td>';
+          });
+          tableRow += "</tr>";
+          $('#jsonTable3 tbody').append(tableRow);
+        }
+      });
+    }
+
+    $(document).ready(function(){
+      createTable3();
+    });
+    
+    console.log("[tbc.client] : /getRecents http Response code 200 - OK ->>>>>>> JSON DATA: "+recentsRequest.responseText);
+  }
+};
+recentsRequest.send();
+
+ ///////////////////////////
 
 ///////////////////////////////////
 ///   THE END
