@@ -336,61 +336,7 @@ function copy() {
     readStream.pipe(writeStream);
 }
 
-/*function getBit88(filename) {
-  
-  var state;
-  // First I want to read the file
-  fs.readFile('./.data/bit88_'+filename+'.txt', function read(err, data) {
-      if (err) {
-          throw err;
-      }
-      state = data;
-      console.log("STATE ---------------> "+state);
-      if (state == 1){
-        return true;
-        }
-      else {
-        return false;
-        }
-  });
 
-}*/
-
-function getBit88(filename){
-  var state = fs.readFileSync('./.data/bit88_'+filename+'.txt','utf8');
-  //console.log("STATE ---------------> "+state);
-  if (state == 1){
-    return true;
-    }
-  else {
-    return false;
-    }
-}
-
-
-function setBit88(state,filename) {
-  if (state == true){
-    
-    fs.writeFileSync('./.data/bit88_'+filename+'.txt', "1", function(err) {
-    if(err) {
-        return console.log(err);
-    }
-
-    console.log('[tbc.fs] : '+filename+' Twitter account limit reached, bit88 has been enabled ');
-});
-  
-  }
-  if (state == false){
-    
-    fs.writeFile('./.data/bit88_'+filename+'.txt', "0", function(err) {
-    if(err) {
-        return console.log(err);
-    }
-
-    console.log("[tbc.fs] : Twitter limit has not been reached yet, bit88 is disabled ");
-});
-  
-  }
  
-}
+
   

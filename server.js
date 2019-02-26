@@ -249,6 +249,38 @@ dbApp.get('/getTotals', cors(corsOptions), function (request2, response2, next2)
 
 });
 
+
+////////
+// SERVE HTTP /getReports REQUESTS
+///////
+
+dbApp.get('/getRecents', cors(corsOptions), function (request, response) {
+  
+// ---------------------------------------------------
+
+//                 PERFORM DB QUERY
+
+// ---------------------------------------------------
+    
+    
+  let dbQueryRecents = "SELECT DISTINCT screen_name, list, report_timestamp FROM Reports WHERE EXISTS "+
+                        "(SELECT tw_userID FROM Trolls WHERE Reports.tw_userID = Trolls.tw_userID "+
+				                 "UNION "+
+				                 "SELECT tw_userID FROM Regim WHERE Reports.tw_userID = Regim.tw_userID "+
+				                 "UNION "+
+				                 "SELECT tw_userID FROM Ibex WHERE Reports.tw_userID = Ibex.tw_userID)"+
+                        "ORDER BY report_timestamp";
+  
+  
+  db.all(dbQueryRecents, function(err, rows) {
+    if (err) { functions.log(console.error(err)) }
+    response.send(JSON.stringify(rows));
+    //response.json(rows);
+  });
+  
+});
+
+
 // listen for requests :)
 var listener = dbApp.listen(process.env.PORT, function() {
   functions.log('[tbc.sqlite] : db app is listening on port ' + listener.address().port + '....');
