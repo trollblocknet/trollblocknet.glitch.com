@@ -7,6 +7,7 @@
 
 var Twitter = require('twitter'); 
 var fs = require('fs');
+var AdmZip = require('adm-zip');
 
 module.exports = {
   
@@ -18,38 +19,20 @@ module.exports = {
 // Input:
 // Output: N/A
 // ---------------------------------------------------
-
-retrieveTwitterBlocksAndUpdateDB: function (db,table,client){
-  
-  // IMPORT TWITTER BLOCKED PROFILES INTO INTO DB 
-  
-  client.get('/blocks/ids.json?stringify_ids=true&cursor=-1', function(error, profiles, response) {
-  if(error) {
-
-    return console.error(error);
-     
-  }else{
-    log('[tbc.twitter] : '+table+' blocked profiles list received' );
-  }
-  
-  updateBlockedTable(db,profiles.ids,table); 
-    
-  updateCSV(profiles.ids,table);
-   
-   return;
-  //console.log(response);  // Raw response object.
-  });
-},
-
-  
+ 
 retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
    
   //DEFINE CSV PATHS AND VARIABLES
-  var csvPath = './public/tmp.csv';
+  var i = 1;
+  var x = 0;
+  var totalBlocks = 0;
+  var csvPath = './public/tmp-'+table+'.csv';
+  //var csvFilename = './public/'+table;
   var newCsvPath = './public/'+table+'.csv';
+ // creating archives
+  var zip = new AdmZip();
   
-  
-  //RESET TMP.CSV FILE BEFORE STARTING (NEEDED FOR THE CASES THE CURSORING OPERATION DOES NOT FINISHES HENCE ACTIVATING BIT88)
+  //RESET TMP.CSV FILE BEFORE STARTING 
    var fileExists = fs.existsSync(csvPath);
    if (fileExists){
     fs.unlinkSync(csvPath, function (err) {
@@ -68,40 +51,47 @@ retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
      }
      else
      { 
-       //PERFORM ACTIONS FOR THIS BATCH:
+      //PERFORM ACTIONS FOR THIS BATCH:
 
-       //FIRST WE INSERT ALL THE PROFILES ID'S WE RECEIVED FROM THIS BATCH TO THE BD
-       updateBlockedTable(db,list.ids,table); 
+      //FIRST WE INSERT ALL THE PROFILES ID'S WE RECEIVED FROM THIS BATCH TO THE BD
+      updateBlockedTable(db,list.ids,table); 
        
-       //THEN WE APPEND ALL THE PROFILES ID'S TO A TEMPORARY CSV FILE. 
+       //THEN WE APPEND ALL THE PROFILES ID'S TO A TEMPORARY CSV FILE. --> TROLMUT COMPATIBILITY
        appendTMPCSV(list.ids,csvPath);
+       
+      // NOW WE ADD THE PAGE DATA TO THE ZIP FILE
+      filename = table + i;
+      var content = ''; 
+      for (x=0;x<list.ids.length;x++){ 
+        content += list.ids[x]+'\n';
+      }
+      totalBlocks += x;
+      zip.addFile(filename+".csv", Buffer.alloc(content.length, content), "@TrollBlockNet");
+      // add local file
        
        //FINALLY WE RECURSIVELY CALL THE GET FUNCTION WE JUST DEFINED AVOBE SO WE CAN GET THE NEXT 
        //BATCH (CURSOR) IN A SYNCHRONIZED WAY (REQUEST ARE DONE SEQUENTIALLY) 
        if(list.next_cursor != 0) 
        {
+         i++;
          params.cursor = list.next_cursor
          client.get('blocks/ids',params, getlist);
        }
        else
        {
-       //IF IT's THE LASY BATCH, SAVE TMP TO FINAL CSV  
-          fs.renameSync(csvPath,newCsvPath);
-          console.log('[tbc.fs] : file ' +newCsvPath+ ' has been created successfully'); 
+         //IF IT's THE LAST BATCH, PACK IT ALL INTO A ZIP FILE
+         // write everything to disk
+         zip.writeZip("./public/"+table+".zip");
+         
+         //WE CREATE THE FINAL TROLMUT CSV FILE FOR EXPORT
+         fs.renameSync(csvPath,newCsvPath);
+         
+         //AND FINALLY WE SAVE THE TOTALBLOCKS VAR IN THE FS TO BE USED BY /getTotals
+         setTotalBlocks(totalBlocks,table);
        }
     }   
 }); 
   
-  //IF ALL THE RECURSIVE REQUEST WERE MADE SUCCESSFULLY UNTIL REACHING THE CURSOR POSITION #0 (INCLUDED), THE BIT88 
-  //IS STILL BE DISABLED, SO WE CAN SAFELY OVERWRITE THE TMP FILE TO THE FINAL ONE 
-  
-  //^^^^^^^---------THIS IS A WRONG APPROACH, IT MUST BE IMPLEMENTED USING CALLBACKS, JUST LIKE ANY HTTP GET REQUEST
-  //(WAIT CODE RESPONSE == 200, THEN RENAME TMP.CSV)
-  
-  //NEW APPROACH USING CALLBACKS
-
-
-
 },
   
 
@@ -170,18 +160,15 @@ log: function (message){
   
   getTotalBlocks: function(filename){
     //Read number of rows in CSV and return value
-    var contents = fs.readFileSync('./public/'+filename+'.csv')
-    var lines = contents.toString().split('\n').length - 1
-    return lines;
+    var totalBlocked = fs.readFileSync('./.data/total-blocks-'+filename+'.txt')
+    return totalBlocked;
   },
-
-  
   
   getTimestamp: function(filename){
     //Return CSV file creation date 
     let timestamp = filename+" timestamp";
     return timestamp;
-  },
+  }
 
   
   
@@ -307,7 +294,7 @@ var log = function (message){
   return;
 }
 
-var move = function (oldPath, newPath, callback) {
+/*var move = function (oldPath, newPath, callback) {
 
     fs.rename(oldPath, newPath, function (err) {
         if (err) {
@@ -334,7 +321,13 @@ function copy() {
     });
 
     readStream.pipe(writeStream);
-}
+}*/
+
+  var setTotalBlocks = function(totalBlocks,filename){
+    fs.writeFile('./.data/total-blocks-'+filename+'.txt', totalBlocks, (err) => {
+    if (err) throw err;
+    });
+  }
 
 
  

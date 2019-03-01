@@ -155,7 +155,7 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response) {
     let dbTable1 = "Trolls"
     functions.retrieveTwitterBlocksAndUpdateDB2(db,dbTable1,client); 
   
-    //retrieveTwitterFollowers(client,"PandoEulogio") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
+    //functions.retrieveTwitterFollowers(client,"MovFranquista") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
        
     
     //-------------- @XUSMABLOCKNET -----------------
@@ -168,7 +168,7 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response) {
       access_token_secret: process.env.XUSMABLOCKNET_TWITTER_ACCESS_TOKEN_SECRET
     });
     let dbTable2 = "Regim";
-    functions.retrieveTwitterBlocksAndUpdateDB(db,dbTable2,client); 
+    functions.retrieveTwitterBlocksAndUpdateDB2(db,dbTable2,client); 
   
     
     //-------------- @IBEXBLOCKNET -----------------
@@ -181,7 +181,7 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response) {
       access_token_secret: process.env.IBEXBLOCKNET_TWITTER_ACCESS_TOKEN_SECRET
     });
     let dbTable3 = "IBEX";
-    functions.retrieveTwitterBlocksAndUpdateDB(db,dbTable3,client); 
+    functions.retrieveTwitterBlocksAndUpdateDB2(db,dbTable3,client); 
   
 
 // ---------------------------------------------------
@@ -225,21 +225,21 @@ dbApp.get('/getTotals', cors(corsOptions), function (request2, response2, next2)
        "list": '<p style="text-align:center;\">Trolls unionistes i \"Infilitrats Indepes\"<\/p>',
        "total": '<span style="font-size:24px;font-weight:bold;\">'+totalTrollsBlocked+'<\/span>',
        "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/trolls/\" target=\"blank_\">Subscriure\'m-hi</a>',
-       "csvLink": '<a href=\"http://trollblocknet.cat/llistes/trolls.csv\" target=\"blank_\">trolls.csv</a>'
+       "csvLink": '<a href=\"http://trollblocknet.cat/llistes/trolls.zip\" target=\"blank_\">trolls.zip</a>'
        //"timestamp": trollsTimestamp
      },
      {
        "list": '<p style="text-align:center;\">Col·laboradors amb el \"Règim del 78\"<\/p>',
        "total": '<span style="font-size:24px;font-weight:bold;\">'+totalRegimBlocked+'<\/span>',
       "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/regim78/\" target=\"blank_\">Subscriure\'m-hi</a>',
-       "csvLink": '<a href=\"http://trollblocknet.cat/llistes/regim78.csv\" target=\"blank_\">regim78.csv</a>'
+       "csvLink": '<a href=\"http://trollblocknet.cat/llistes/regim78.zip\" target=\"blank_\">regim78.zip</a>'
        //"timestamp": regimTimestamp
      },
      {
        "list": '<p style="text-align:center;\">Empreses de l\'IBEX-35 i financeres del Règim<\/p>', 
        "total": '<span style="font-size:24px;font-weight:bold;\">'+totalIBEXBlocked+'<\/span>',
        "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/trolls/\" target=\"blank_\">Subscriure\'m-hi</a>',
-       "csvLink": '<a href=\"http://trollblocknet.cat/llistes/IBEX35.csv\" target=\"blank_\">IBEX35.csv</a>'
+       "csvLink": '<a href=\"http://trollblocknet.cat/llistes/IBEX35.zip\" target=\"blank_\">IBEX35.zip</a>'
        //"timestamp": IBEXTimestamp
      }
     ];
