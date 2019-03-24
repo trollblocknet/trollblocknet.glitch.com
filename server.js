@@ -1,7 +1,7 @@
 // ************************************************************************************
 // \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// \\_// 
 //
-//                 #TROLLBLOCKNET REPORTING SYSTEM BACKEND VERSION 1.6
+//                 #TROLLBLOCKNET REPORTING SYSTEM BACKEND VERSION 1.13
 //  
 //                           AUTHOR: @TROLLBLOCKNET (Twitter)
 //        
@@ -78,7 +78,7 @@ dbApp.use(express.static('public'));
 // init sqlite db
 var fs = require('fs');
 //var dbFile = './.data/tbn_reports2.db';
-var dbFile = './.data/tbn_reports3.db';
+var dbFile = './.data/tbn_reports.db';
 var exists = fs.existsSync(dbFile); 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(dbFile);
@@ -118,7 +118,7 @@ dbApp.get('/', function(request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
-const whitelist = ['http://trollblocknet.cat']
+const whitelist = ['http://trollblocknet.cat','https://trollblocknet.cat']
 const corsOptions = {
   origin: function(origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -155,7 +155,7 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response) {
     let dbTable1 = "Trolls"
     functions.retrieveTwitterBlocksAndUpdateDB2(db,dbTable1,client); 
   
-    //functions.retrieveTwitterFollowers(client,"MovFranquista") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
+    //functions.retrieveTwitterFollowers(client,"UngaUngaArm") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
        
     
     //-------------- @XUSMABLOCKNET -----------------
@@ -238,7 +238,7 @@ dbApp.get('/getTotals', cors(corsOptions), function (request2, response2, next2)
      {
        "list": '<p style="text-align:center;\">Empreses de l\'IBEX-35 i financeres del Règim<\/p>', 
        "total": '<span style="font-size:24px;font-weight:bold;\">'+totalIBEXBlocked+'<\/span>',
-       "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/trolls/\" target=\"blank_\">Subscriure\'m-hi</a>',
+       "subscriptionLink": '<a href=\"http://trollblocknet.cat/subscripcio/IBEX35/\" target=\"blank_\">Subscriure\'m-hi</a>',
        "csvLink": '<a href=\"http://trollblocknet.cat/llistes/IBEX35.zip\" target=\"blank_\">IBEX35.zip</a>'
        //"timestamp": IBEXTimestamp
      }
@@ -251,7 +251,7 @@ dbApp.get('/getTotals', cors(corsOptions), function (request2, response2, next2)
 
 
 ////////
-// SERVE HTTP /getReports REQUESTS
+// SERVE HTTP /getRecents REQUESTS
 ///////
 
 dbApp.get('/getRecents', cors(corsOptions), function (request, response) {
@@ -269,7 +269,7 @@ dbApp.get('/getRecents', cors(corsOptions), function (request, response) {
 				                 "SELECT tw_userID FROM Regim WHERE Reports.tw_userID = Regim.tw_userID "+
 				                 "UNION "+
 				                 "SELECT tw_userID FROM Ibex WHERE Reports.tw_userID = Ibex.tw_userID) "+
-                         "ORDER BY report_timestamp "+
+                         "ORDER BY report_timestamp DESC "+
                          "LIMIT 10";
   
   
@@ -278,6 +278,14 @@ dbApp.get('/getRecents', cors(corsOptions), function (request, response) {
     response.send(JSON.stringify(rows));
     //response.json(rows);
   });
+  
+  //UNCOMMENT TO REMOVE NULLS FROM TABLE 
+  /*db.run('DELETE FROM Reports WHERE screen_name LIKE "1108345854082076672"',function(err){
+  if(err){
+    return console.error(err.message); 
+  }
+  functions.log('NULLS DELETED FROM TABLE Repors');
+});*/
   
 });
 
@@ -341,6 +349,7 @@ const connect = async () => {
         }
         functions.log(`[tbc.sqlite] : Rows inserted in Reports Table -> ${this.changes}`);
       });
+      
     });
     
     

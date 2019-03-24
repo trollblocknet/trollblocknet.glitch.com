@@ -42,7 +42,7 @@ retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
   }
   
   //RECURSIVE FUNCTION THAT RETRIEVES ALL BLOCKED PROFILE FROM TWITTER (IMPLEMENTS CURSORING / PAGINATION) 
-  var params = {count: '5000', cursor:  -1, stringify_ids: true };
+  var params = {count: '4000', cursor:  -1, stringify_ids: true };
   client.get('blocks/ids', params, function getlist(error, list, response) 	
   {
      if (error) {
@@ -169,7 +169,6 @@ log: function (message){
     let timestamp = filename+" timestamp";
     return timestamp;
   }
-
   
   
   ///////////END EXPORTS
