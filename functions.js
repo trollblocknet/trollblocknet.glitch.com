@@ -13,51 +13,39 @@ module.exports = {
   
   ////////// START
 
+
 // ---------------------------------------------------
-// Function: 
-// Description:
-// Input:
+// Function: retrieveTwitterBlocksAndUpdateDB3
+// Description: Same as 2 but using buffers instead of tmp.csv files
+// Input: db,table,client
 // Output: N/A
 // ---------------------------------------------------
  
-retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
+retrieveTwitterBlocksAndUpdateDB3: function (db,table,client){
    
-  //DEFINE CSV PATHS AND VARIABLES
+  // DEFINE & INITIALIZE VARIABLES
   var i = 1;
   var x = 0;
   var totalBlocks = 0;
-  var csvPath = './public/tmp-'+table+'.csv';
-  //var csvFilename = './public/'+table;
-  var newCsvPath = './public/'+table+'.csv';
- // creating archives
+  var filename;
+  
+  // CREATE ZIP ARCHIVE VAR
   var zip = new AdmZip();
-  
-  //RESET TMP.CSV FILE BEFORE STARTING 
-   var fileExists = fs.existsSync(csvPath);
-   if (fileExists){
-    fs.unlinkSync(csvPath, function (err) {
-    if (err) {console.error(err.status);}
-    else{ console.log('[tbc.fs] : File '+csvPath+' reset succesful');}
-  });
-  }
-  
-  //RECURSIVE FUNCTION THAT RETRIEVES ALL BLOCKED PROFILE FROM TWITTER (IMPLEMENTS CURSORING / PAGINATION) 
+
+  // RECURSIVE FUNCTION THAT RETRIEVES ALL BLOCKED PROFILES FROM TWITTER (IMPLEMENTS CURSORING / PAGINATION) 
   var params = {count: '4000', cursor:  -1, stringify_ids: true };
   client.get('blocks/ids', params, function getlist(error, list, response) 	
   {
      if (error) {
-       //IF THE GET REQUEST DOES NOT HAVE A SUCCESS RESPONSE, ABORT
+       // IF THE GET REQUEST DOES NOT HAVE A SUCCESS RESPONSE, ABORT
        console.error(error);
      }
      else
      { 
-      //PERFORM ACTIONS FOR THIS BATCH:
+      // PERFORM ACTIONS FOR THIS BATCH:
 
-      //FIRST WE INSERT ALL THE PROFILES ID'S WE RECEIVED FROM THIS BATCH TO THE BD
+      // FIRST WE INSERT ALL THE PROFILES ID'S WE RECEIVED FROM THIS BATCH TO THE BD
       updateBlockedTable(db,list.ids,table); 
-       
-       //THEN WE APPEND ALL THE PROFILES ID'S TO A TEMPORARY CSV FILE. --> TROLMUT COMPATIBILITY
-       appendTMPCSV(list.ids,csvPath);
        
       // NOW WE ADD THE PAGE DATA TO THE ZIP FILE
       filename = table + i;
@@ -69,8 +57,8 @@ retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
       zip.addFile(filename+".csv", Buffer.alloc(content.length, content), "@TrollBlockNet");
       // add local file
        
-       //FINALLY WE RECURSIVELY CALL THE GET FUNCTION WE JUST DEFINED AVOBE SO WE CAN GET THE NEXT 
-       //BATCH (CURSOR) IN A SYNCHRONIZED WAY (REQUEST ARE DONE SEQUENTIALLY) 
+       // FINALLY WE RECURSIVELY CALL THE GET FUNCTION WE JUST DEFINED AVOBE SO WE CAN GET THE NEXT 
+       // BATCH (CURSOR) IN A SYNCHRONIZED WAY (REQUEST ARE DONE SEQUENTIALLY) 
        if(list.next_cursor != 0) 
        {
          i++;
@@ -79,14 +67,10 @@ retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
        }
        else
        {
-         //IF IT's THE LAST BATCH, PACK IT ALL INTO A ZIP FILE
-         // write everything to disk
+         // IF IT's THE LAST BATCH, PACK IT ALL INTO A ZIP FILE
          zip.writeZip("./public/"+table+".zip");
          
-         //WE CREATE THE FINAL TROLMUT CSV FILE FOR EXPORT
-         fs.renameSync(csvPath,newCsvPath);
-         
-         //AND FINALLY WE SAVE THE TOTALBLOCKS VAR IN THE FS TO BE USED BY /getTotals
+         // FINALLY WE SAVE THE TOTALBLOCKS VAR IN THE FS TO BE USED BY /getTotals
          setTotalBlocks(totalBlocks,table);
        }
     }   
@@ -94,7 +78,6 @@ retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
   
 },
   
-
   // ---------------------------------------------------
 // Function: getTwitterFollowers(client,tw_userID)
 // Description: downoad the followers lists of tw_userID into a CSV file
@@ -134,7 +117,7 @@ retrieveTwitterFollowers: function (client,screenName){
 // Description: Shows a log event in the server log console and saves it in /app/.data/console.log with current timestamp
 // Input: String --> Console message
 // Output: N/A
-// ---------------------------------------------------
+// -----------------------------------------------------
 
 log: function (message){
   
@@ -211,28 +194,12 @@ var updateBlockedTable = function (db,ids,table) {
 }
 
 // ---------------------------------------------------
-// Function:
-// Description:
-// Input:
-// Output:
+// Function: updateCSV
+// Description: Appends all screen_name's followers id's in a csv file 
+// Called by: retrieveTwitterFollowers()
+// Input: ids, fileName
+// Output: N/A
 // ---------------------------------------------------
-
-var appendTMPCSV = function (ids,csvPath){
-  
-  var wstream = fs.createWriteStream(csvPath, { 
-    'flags': 'a'
-    , 'mode' : 0777
-    , 'encoding': null
-  });
-  let i;
-  for (i=0;i<ids.length;i++)
-  {
-    wstream.write(ids[i]+'\n');
-  }
-  
-  //wstream.write(ids+'');
-  wstream.end();
-}
 
 var updateCSV = function (ids,fileName){
 
@@ -293,7 +260,108 @@ var log = function (message){
   return;
 }
 
-/*var move = function (oldPath, newPath, callback) {
+  var setTotalBlocks = function(totalBlocks,filename){
+    fs.writeFile('./.data/total-blocks-'+filename+'.txt', totalBlocks, (err) => {
+    if (err) throw err;
+    });
+  }
+
+
+ // DEPRECATED FUNCTIONS - ARCHIVE
+  
+  
+// ---------------------------------------------------
+// Function: retrieveTwitterBlocksAndUpdateDB2 - DEPRECATED! (DO NOT DELETE JUST IN CASE WE ADD TROLMUT COMPATIBILITY)
+// Description:
+// Input: db,table,client
+// Output: N/A
+// ---------------------------------------------------
+ 
+/*retrieveTwitterBlocksAndUpdateDB2: function (db,table,client){
+   
+  //DEFINE CSV PATHS AND VARIABLES
+  var i = 1;
+  var x = 0;
+  var totalBlocks = 0;
+  var csvPath = './public/tmp-'+table+'.csv';
+  //var csvFilename = './public/'+table;
+  var newCsvPath = './public/'+table+'.csv';
+ // creating archives
+  var zip = new AdmZip();
+  
+  //RESET TMP.CSV FILE BEFORE STARTING 
+   var fileExists = fs.existsSync(csvPath);
+   if (fileExists){
+    fs.unlinkSync(csvPath, function (err) {
+    if (err) {console.error(err.status);}
+    else{ console.log('[tbc.fs] : File '+csvPath+' reset succesful');}
+  });
+  }
+  
+  //RECURSIVE FUNCTION THAT RETRIEVES ALL BLOCKED PROFILE FROM TWITTER (IMPLEMENTS CURSORING / PAGINATION) 
+  var params = {count: '4000', cursor:  -1, stringify_ids: true };
+  client.get('blocks/ids', params, function getlist(error, list, response) 	
+  {
+     if (error) {
+       //IF THE GET REQUEST DOES NOT HAVE A SUCCESS RESPONSE, ABORT
+       console.error(error);
+     }
+     else
+     { 
+      //PERFORM ACTIONS FOR THIS BATCH:
+
+      //FIRST WE INSERT ALL THE PROFILES ID'S WE RECEIVED FROM THIS BATCH TO THE BD
+      updateBlockedTable(db,list.ids,table); 
+       
+       //THEN WE APPEND ALL THE PROFILES ID'S TO A TEMPORARY CSV FILE. --> TROLMUT COMPATIBILITY
+       appendTMPCSV(list.ids,csvPath);
+       
+      // NOW WE ADD THE PAGE DATA TO THE ZIP FILE
+      filename = table + i;
+      var content = ''; 
+      for (x=0;x<list.ids.length;x++){ 
+        content += list.ids[x]+'\n';
+      }
+      totalBlocks += x;
+      zip.addFile(filename+".csv", Buffer.alloc(content.length, content), "@TrollBlockNet");
+      // add local file
+       
+       //FINALLY WE RECURSIVELY CALL THE GET FUNCTION WE JUST DEFINED AVOBE SO WE CAN GET THE NEXT 
+       //BATCH (CURSOR) IN A SYNCHRONIZED WAY (REQUEST ARE DONE SEQUENTIALLY) 
+       if(list.next_cursor != 0) 
+       {
+         i++;
+         params.cursor = list.next_cursor
+         client.get('blocks/ids',params, getlist);
+       }
+       else
+       {
+         //IF IT's THE LAST BATCH, PACK IT ALL INTO A ZIP FILE
+         // write everything to disk
+         zip.writeZip("./public/"+table+".zip");
+         
+         //WE CREATE THE FINAL TROLMUT CSV FILE FOR EXPORT
+         fs.renameSync(csvPath,newCsvPath);
+         
+         //AND FINALLY WE SAVE THE TOTALBLOCKS VAR IN THE FS TO BE USED BY /getTotals
+         setTotalBlocks(totalBlocks,table);
+       }
+    }   
+}); 
+  
+},
+*/
+  
+    
+// ---------------------------------------------------
+// Function: 
+// Description:
+// Input: 
+// Output: 
+// ---------------------------------------------------
+ 
+  
+  /*var move = function (oldPath, newPath, callback) {
 
     fs.rename(oldPath, newPath, function (err) {
         if (err) {
@@ -308,6 +376,13 @@ var log = function (message){
     });
 }
 
+// ---------------------------------------------------
+// Function: 
+// Description:
+// Input: 
+// Output: 
+// ---------------------------------------------------
+
 function copy() {
     var readStream = fs.createReadStream(oldPath);
     var writeStream = fs.createWriteStream(newPath);
@@ -321,14 +396,30 @@ function copy() {
 
     readStream.pipe(writeStream);
 }*/
-
-  var setTotalBlocks = function(totalBlocks,filename){
-    fs.writeFile('./.data/total-blocks-'+filename+'.txt', totalBlocks, (err) => {
-    if (err) throw err;
-    });
-  }
-
-
- 
-
   
+  
+// ---------------------------------------------------
+// Function: appendTMPCSV
+// Description: Appends all id's in a csv file to allow TROLMUT.CAT compatibility
+// Called by: retrieveTwitterBlocksAndUpdateDB2:
+// Input: ids,csvPath
+// Output: N/A
+// ---------------------------------------------------
+
+/* var appendTMPCSV = function (ids,csvPath){
+  
+  var wstream = fs.createWriteStream(csvPath, { 
+    'flags': 'a'
+    , 'mode' : 0777
+    , 'encoding': null
+  });
+  let i;
+  for (i=0;i<ids.length;i++)
+  {
+    wstream.write(ids[i]+'\n');
+  }
+  
+  //wstream.write(ids+'');
+  wstream.end();
+}
+*/

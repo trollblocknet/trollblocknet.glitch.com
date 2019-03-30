@@ -2,17 +2,17 @@
 
 🗨️ TrollBlockChain DAAP - Trolls Distributed Ledger / DB (BlockChain Implementation) - @trollblocknet
 
-🗨️ Current Production Version: tbc-beta_1.10
+🗨️ Current Production Version: tbc-beta_1.13
 
-🗨️ Current Development Version: tbc-beta_1.11
+🗨️ Current Development Version: tbc-beta_1.14
 
 🔫 App triggered by: cron-job.org --> "TrollBlockNet Core Backend - empty rabbitmq queue every 15 mins"
 
 ALARM CREATED IN CRON-JOB.ORG: IT TRIGGERS THE SERVER LISTENERS TO EMPTY THE RABBITAMQ QUEUE ONCE EVERY 15 MINUTES. AFTER 5 MINS OF INACTIVITY, THE SERVER GETS IN EVERGY SAVING MODE AGAIN, SO THERE ARE 10 MINS OF ENERGY SAVING MODE EVERY 15 MINS WHEN THERE IS NO ACTIVITY. (WAKING UP THE SERVER IS NEEDED BECAUSE IF THE CLOUDAMQ SERVER REBOOTS FOR AN INSTANT FOR MAINTENANCE, ETC, THE QUEUE IS LOST, SO IT'S BETTER TO NOT TO LEAVE DATA IN THE QUEUE FOR LONG PERIODS OF TIME).
 
-🌐 App Hosted at: <https://tbc-beta-15.glitch.com> pending migrate to (redir or embed) --> <http://trollblocknet.cat/reports/>
+🌐 Server Side App Hosted at: <https://trollblocknet.glitch.com>
 
-🌐 Project Git-Hub: <https://github.com/trollblocknet/tbc-beta_1.5>
+🌐 Project Git-Hub: <https://github.com/trollblocknet/trollblocknet.glitch.me >
 
 ## Disclaimer:
 

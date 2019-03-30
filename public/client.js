@@ -6,7 +6,7 @@
 
 var reportRequest = new XMLHttpRequest(),
     method = "GET",
-    url = "https://trollblocknet.glitch.me/getReports";
+    url = "https://developer-trollblocknet.glitch.me/getReports";
 
 reportRequest.open(method, url, true);
 reportRequest.onreadystatechange = function () {
@@ -95,7 +95,7 @@ reportRequest.send();
 
 var totalsRequest = new XMLHttpRequest(),
     method = "GET",
-    url = "https://trollblocknet.glitch.me/getTotals";
+    url = "https://developer-trollblocknet.glitch.me/getTotals";
 
 totalsRequest.open(method, url, true);
 totalsRequest.onreadystatechange = function () {
@@ -159,7 +159,7 @@ totalsRequest.send();
 
 var recentsRequest = new XMLHttpRequest(),
     method = "GET",
-    url = "https://trollblocknet.glitch.me/getRecents";
+    url = "https://developer-trollblocknet.glitch.me/getRecents";
 
 recentsRequest.open(method, url, true);
 recentsRequest.onreadystatechange = function () {
@@ -212,6 +212,8 @@ recentsRequest.onreadystatechange = function () {
 recentsRequest.send();
 
  ///////////////////////////
+
+
 
 ///////////////////////////////////
 ///   THE END
