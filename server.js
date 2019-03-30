@@ -129,6 +129,8 @@ const corsOptions = {
   }
 }
 
+
+
 ////////
 // SERVE HTTP /getReports REQUESTS
 ///////
@@ -153,7 +155,7 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response) {
       access_token_secret: process.env.TROLLBLOCKCHAIN_TWITTER_ACCESS_TOKEN_SECRET
     });
     let dbTable1 = "Trolls"
-    functions.retrieveTwitterBlocksAndUpdateDB2(db,dbTable1,client); 
+    functions.retrieveTwitterBlocksAndUpdateDB3(db,dbTable1,client); 
   
     //functions.retrieveTwitterFollowers(client,"UngaUngaArm") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
        
@@ -168,7 +170,7 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response) {
       access_token_secret: process.env.XUSMABLOCKNET_TWITTER_ACCESS_TOKEN_SECRET
     });
     let dbTable2 = "Regim";
-    functions.retrieveTwitterBlocksAndUpdateDB2(db,dbTable2,client); 
+    functions.retrieveTwitterBlocksAndUpdateDB3(db,dbTable2,client); 
   
     
     //-------------- @IBEXBLOCKNET -----------------
@@ -181,7 +183,7 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response) {
       access_token_secret: process.env.IBEXBLOCKNET_TWITTER_ACCESS_TOKEN_SECRET
     });
     let dbTable3 = "IBEX";
-    functions.retrieveTwitterBlocksAndUpdateDB2(db,dbTable3,client); 
+    functions.retrieveTwitterBlocksAndUpdateDB3(db,dbTable3,client); 
   
 
 // ---------------------------------------------------
@@ -331,7 +333,6 @@ const connect = async () => {
     //DISECT MESSAGE IN 4 VARIABLES 
     var disectedMessage = message.toString().split(";");
     
-    console.log("TIMESTAMP -----------------------------------------------> "+disectedMessage[0]);
     report_timestamp = disectedMessage[0];
     screen_name = disectedMessage[1];
     tw_userID = disectedMessage[2];
