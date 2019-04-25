@@ -157,8 +157,18 @@ dbApp.get('/getReports', cors(corsOptions), function (request, response) {
     let dbTable1 = "Trolls"
     functions.retrieveTwitterBlocksAndUpdateDB3(db,dbTable1,client); 
   
-    //functions.retrieveTwitterFollowers(client,"UngaUngaArm") // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv
-       
+    // REPLACE screen_name_fw VALUE WITH ACCOUNT NAME (WITHOUT @) TO RETRIEVE ACCOUNT FOLLOWERS IN CSV
+  
+    var screen_name_fw = "potorret";
+  
+    // RETRIEVE ACCOUNT FOLLOWERS IN CSV VERSION 1 - ONLY UP TO 5000 FOLLOWERS
+  
+    //functions.retrieveTwitterFollowers(client,screen_name_fw) // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.csv (download from https://developer-trollblocknet.glitch.me/followers.csv)
+    
+   // RETRIEVE ACCOUNT FOLLOWERS IN CSV VERSION 2 - NO LIMITS (STILL NOT IMPLEMENTED)
+  
+    //functions.retrieveTwitterFollowers2(client,screen_name_fw) // --> ACTIVATE ONLY ON DEMAND TO RETRIEVE THE FOLLOWERS OF ONE TROLL TO public/followers.zip (download from https://developer-trollblocknet.glitch.me/followers.zip)
+    
     
     //-------------- @XUSMABLOCKNET -----------------
   

@@ -111,6 +111,67 @@ retrieveTwitterFollowers: function (client,screenName){
   
 });
 },
+  
+// ---------------------------------------------------
+// Function: retrieveTwitterBlocksAndUpdateDB3
+// Description: Same as 2 but using buffers instead of tmp.csv files
+// Input: db,table,client
+// Output: N/A
+// ---------------------------------------------------
+ 
+retrieveTwitterFollowers2: function (client,screenName){
+  
+  console.log("Retrieving "+screenName+"'s followers NOW");
+   
+  // DEFINE & INITIALIZE VARIABLES
+  var i = 1;
+  var x = 0;
+  var filename;
+  
+  // CREATE ZIP ARCHIVE VAR
+  var zip = new AdmZip();
+
+  // RECURSIVE FUNCTION THAT RETRIEVES ALL BLOCKED PROFILES FROM TWITTER (IMPLEMENTS CURSORING / PAGINATION) 
+  var params = {count: '4000', cursor:  -1, stringify_ids: true , screen_name: screenName};
+  client.get('followers/ids', params, function getlist(error, list, response) 	
+  {
+     if (error) {
+       // IF THE GET REQUEST DOES NOT HAVE A SUCCESS RESPONSE, ABORT
+       console.error(error);
+     }
+     else
+     { 
+      // PERFORM ACTIONS FOR THIS BATCH:
+       
+      //console.log("Current batch ID's "+list.ids);
+
+      // FIRST WE ADD THE CURRENT PAGE DATA RETRIEVED FROM TWITTER TO THE ZIP FILE
+       filename = "followers" + i;
+      var content = ''; 
+      for (x=0;x<list.ids.length;x++){ 
+        content += list.ids[x]+'\n';
+      }
+      zip.addFile(filename+".csv", Buffer.alloc(content.length, content), "@TrollBlockNet");
+      // add local file
+       
+       // FINALLY WE RECURSIVELY CALL THE GET FUNCTION WE JUST DEFINED AVOBE SO WE CAN GET THE NEXT 
+       // BATCH (CURSOR) IN A SYNCHRONIZED WAY (REQUEST ARE DONE SEQUENTIALLY) 
+       if(list.next_cursor != 0) 
+       {
+         i++;
+         params.cursor = list.next_cursor
+         client.get('followers/ids',params, getlist);
+       }
+       else
+       {
+         // IF IT's THE LAST BATCH, PACK IT ALL INTO A ZIP FILE
+         zip.writeZip("./public/followers.zip");
+         
+       }
+    }   
+}); 
+  
+},  
 
   // ---------------------------------------------------
 // Function: log(String)
